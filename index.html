@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="description" content="Mbrillo Creations Invoice & Billing System">
+<title>Mbrillo Creations - Invoice System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a6fc4;--blue-dark:#155aa0;--blue-light:#e8f1fb;--blue-mid:#c5daf5;
+  --green:#16a34a;--green-light:#dcfce7;--green-mid:#bbf7d0;
+  --amber:#d97706;--amber-light:#fef3c7;--amber-mid:#fde68a;
+  --red:#dc2626;--red-light:#fee2e2;--red-mid:#fecaca;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
+  --gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;
+  --gray-800:#1e293b;--gray-900:#0f172a;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -1px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -2px rgba(0,0,0,.04);
+  --radius:8px;--radius-lg:12px;--radius-xl:16px;
+}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--gray-800);background:var(--gray-100);min-height:100vh}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--gray-900);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-logo .logo-mark{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.sidebar-logo .logo-sub{font-size:10px;color:var(--gray-400);margin-top:1px;letter-spacing:.04em;text-transform:uppercase}
+.sidebar-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.sidebar-section{font-size:10px;font-weight:600;color:var(--gray-500);letter-spacing:.08em;text-transform:uppercase;padding:8px 8px 4px;margin-top:8px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:7px;border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:500;color:var(--gray-400);text-align:left;transition:all .15s;margin-bottom:2px}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-btn.on{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(26,111,196,.4)}
+.nav-btn .icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid var(--gray-200);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm)}
+.topbar-title{font-size:15px;font-weight:600;color:var(--gray-800)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.content{padding:24px 28px;flex:1}
+.card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--gray-100)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.metric{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.metric:nth-child(1)::before{background:linear-gradient(90deg,var(--blue),#60a5fa)}
+.metric:nth-child(2)::before{background:linear-gradient(90deg,var(--green),#4ade80)}
+.metric:nth-child(3)::before{background:linear-gradient(90deg,var(--amber),#fbbf24)}
+.metric:nth-child(4)::before{background:linear-gradient(90deg,var(--purple),#a78bfa)}
+.metric:nth-child(5)::before{background:linear-gradient(90deg,#ec4899,#f472b6)}
+.metric:nth-child(6)::before{background:linear-gradient(90deg,#0891b2,#22d3ee)}
+.mlabel{font-size:11px;font-weight:500;color:var(--gray-500);margin-bottom:6px}
+.mval{font-size:22px;font-weight:700;color:var(--gray-800);letter-spacing:-.5px}
+.mval.green{color:var(--green)}.mval.amber{color:var(--amber)}.mval.purple{color:var(--purple)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--gray-50)}
+th{text-align:left;padding:10px 12px;border-bottom:2px solid var(--gray-200);font-weight:600;font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid var(--gray-100);color:var(--gray-700)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--gray-50)}
+.bdg{display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.02em}
+.bdg-paid{background:var(--green-light);color:var(--green);border:1px solid var(--green-mid)}
+.bdg-pending{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-mid)}
+.bdg-overdue{background:var(--red-light);color:var(--red);border:1px solid var(--red-mid)}
+.bdg-partial{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:var(--radius);border:1px solid var(--gray-300);background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:var(--gray-700);transition:all .15s;font-family:'Inter',sans-serif}
+.btn:hover{background:var(--gray-50);border-color:var(--gray-400)}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 1px 3px rgba(26,111,196,.3)}
+.btn-primary:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.btn-success{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 1px 3px rgba(22,163,74,.3)}
+.btn-success:hover{background:#15803d}
+.btn-danger{background:#fff;color:var(--red);border-color:var(--red-mid)}
+.btn-danger:hover{background:var(--red-light)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--gray-500)}
+.btn-ghost:hover{background:var(--gray-100);color:var(--gray-700)}
+.btn-amber{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-amber:hover{background:#b45309}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-xs{padding:3px 9px;font-size:11px;border-radius:6px}
+label{display:block;font-size:12px;font-weight:500;color:var(--gray-600);margin-bottom:4px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--gray-300);border-radius:var(--radius);background:#fff;color:var(--gray-800);font-size:13px;font-family:'Inter',sans-serif;transition:border-color .15s,box-shadow .15s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,111,196,.12)}
+input::placeholder,textarea::placeholder{color:var(--gray-400)}
+.fr{display:grid;gap:12px;margin-bottom:12px}
+.fr2{grid-template-columns:1fr 1fr}.fr3{grid-template-columns:1fr 1fr 1fr}.fr1{grid-template-columns:1fr}.fr4{grid-template-columns:1fr 1fr 1fr 1fr}
+.it{width:100%;border-collapse:collapse;font-size:12px}
+.it thead tr{background:var(--gray-50)}
+.it th{padding:8px 8px;font-size:10px;font-weight:600;color:var(--gray-500);border-bottom:2px solid var(--gray-200);text-transform:uppercase;letter-spacing:.04em}
+.it td{padding:4px 3px;border-bottom:1px solid var(--gray-100)}
+.it input,.it select{padding:6px 7px;font-size:12px;border-radius:6px}
+.it tbody tr:hover td{background:var(--gray-50)}
+.tot-wrap{margin-top:12px}
+.tot-wrap table{width:280px;margin-left:auto}
+.tot-wrap td{padding:5px 8px;font-size:13px;border-bottom:none}
+.tot-wrap tr:last-child td{border-top:2px solid var(--gray-200);font-weight:700;font-size:14px;padding-top:8px;color:var(--gray-900)}
+.rt{text-align:right;font-weight:600}
+.pg{display:none}.pg.on{display:block}
+.flex{display:flex;align-items:center;gap:8px}
+.flexb{display:flex;align-items:center;justify-content:space-between}
+.inv-no{font-size:20px;font-weight:700;color:var(--blue)}
+.lbtn{background:none;border:none;color:var(--blue);cursor:pointer;font-size:13px;font-weight:500;padding:0;text-decoration:none}
+.lbtn:hover{text-decoration:underline}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:2px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--blue);flex-shrink:0}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cc{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm)}
+.cc:hover{border-color:var(--blue);box-shadow:var(--shadow),0 0 0 3px var(--blue-light);transform:translateY(-1px)}
+.empty{text-align:center;padding:2.5rem;color:var(--gray-400);font-size:13px}
+.pay-sect{margin-top:16px;padding-top:16px;border-top:1px solid var(--gray-100)}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px}
+.logo-prev{max-height:54px;max-width:140px;margin-top:8px;border-radius:6px;border:1px solid var(--gray-200)}
+.section-tip{font-size:11px;color:var(--gray-400);margin-top:4px}
+.page-header{margin-bottom:20px}
+.page-header h2{font-size:18px;font-weight:700;color:var(--gray-900)}
+.page-header p{font-size:13px;color:var(--gray-500);margin-top:3px}
+.search-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.topbar-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--gray-200);background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--gray-500)}
+.topbar-btn:hover{background:var(--gray-50)}
+/* Sync status */
+.sync-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.02em;transition:all .3s}
+.sync-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sync-synced{background:var(--green-light);color:var(--green);border:1px solid var(--green-mid)}
+.sync-synced .dot{background:var(--green)}
+.sync-syncing{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid)}
+.sync-syncing .dot{background:var(--blue);animation:pulse .8s infinite}
+.sync-error{background:var(--red-light);color:var(--red);border:1px solid var(--red-mid)}
+.sync-error .dot{background:var(--red)}
+.sync-offline{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-mid)}
+.sync-offline .dot{background:var(--amber)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* Profit badge */
+.profit-pos{color:var(--green);font-size:11px;font-weight:600}
+.profit-neg{color:var(--red);font-size:11px;font-weight:600}
+/* Stock page */
+.stock-card{background:linear-gradient(135deg,var(--blue-light),#fff);border:1px solid var(--blue-mid);border-radius:var(--radius-lg);padding:14px 16px}
+/* Dashboard charts */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.bar-wrap{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.bar-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.bar-label{width:130px;color:var(--gray-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.bar-bg{flex:1;height:10px;background:var(--gray-100);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .4s}
+.bar-val{width:80px;text-align:right;color:var(--gray-700);font-weight:600;flex-shrink:0}
+/* Toggle switch */
+.toggle-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray-600)}
+.toggle{position:relative;width:34px;height:18px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--gray-300);border-radius:18px;transition:.2s}
+.toggle-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.toggle-slider{background:var(--blue)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(16px)}
+/* Import/export modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.on{display:flex}
+.modal{background:#fff;border-radius:var(--radius-xl);padding:28px;width:460px;max-width:95vw;box-shadow:var(--shadow-lg)}
+.modal h3{font-size:16px;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.modal p{font-size:13px;color:var(--gray-500);margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD LOCK SCREEN -->
+<div id="lock-screen" style="
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0f172a 100%);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;font-family:'Inter',sans-serif;">
+  <div style="
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px;
+    padding:40px 44px;
+    width:380px;
+    max-width:94vw;
+    box-shadow:0 25px 60px rgba(0,0,0,0.5);
+    backdrop-filter:blur(12px);
+    text-align:center;">
+    <div style="font-size:42px;margin-bottom:10px">🔒</div>
+    <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-0.4px">Mbrillo Creations</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:30px;letter-spacing:0.03em;text-transform:uppercase">Billing System</div>
+    <div style="text-align:left;margin-bottom:6px">
+      <label style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.55);letter-spacing:0.04em;text-transform:uppercase">Password</label>
+    </div>
+    <input id="lock-pass" type="password" placeholder="Enter password…"
+      style="
+        width:100%;padding:11px 14px;
+        background:rgba(255,255,255,0.08);
+        border:1px solid rgba(255,255,255,0.18);
+        border-radius:10px;
+        color:#fff;font-size:14px;
+        font-family:'Inter',sans-serif;
+        outline:none;margin-bottom:14px;
+        letter-spacing:0.05em;"
+      onkeydown="if(event.key==='Enter')checkPassword()"
+      oninput="document.getElementById('lock-err').style.display='none'">
+    <div id="lock-err" style="
+      display:none;
+      background:rgba(220,38,38,0.15);
+      border:1px solid rgba(220,38,38,0.35);
+      border-radius:8px;
+      color:#fca5a5;
+      font-size:12px;
+      padding:8px 12px;
+      margin-bottom:12px;
+      text-align:left;">
+      ✗ Incorrect password. Please try again.
+    </div>
+    <button onclick="checkPassword()" style="
+      width:100%;
+      padding:12px;
+      background:linear-gradient(135deg,#1a6fc4,#2563eb);
+      border:none;border-radius:10px;
+      color:#fff;font-size:14px;font-weight:600;
+      cursor:pointer;
+      font-family:'Inter',sans-serif;
+      letter-spacing:0.02em;
+      box-shadow:0 4px 15px rgba(26,111,196,0.4);
+      transition:opacity .15s;">
+      Unlock →
+    </button>
+    <div style="margin-top:20px;font-size:11px;color:rgba(255,255,255,0.2)">Protected · Shared Access</div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">📄 Mbrillo Creations</div>
+      <div class="logo-sub">Billing System</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Main</div>
+      <button class="nav-btn on" onclick="nav('dashboard',this)" data-page="dashboard"><span class="icon">📊</span>Dashboard</button>
+      <button class="nav-btn" onclick="nav('new-invoice',this)" data-page="new-invoice"><span class="icon">➕</span>New Invoice</button>
+      <button class="nav-btn" onclick="nav('invoices',this)" data-page="invoices"><span class="icon">🗂</span>All Invoices</button>
+      <div class="sidebar-section">Manage</div>
+      <button class="nav-btn" onclick="nav('quotations',this)" data-page="quotations"><span class="icon">📋</span>Quotations</button>
+      <button class="nav-btn" onclick="nav('customers',this)" data-page="customers"><span class="icon">👥</span>Customers</button>
+      <button class="nav-btn" onclick="nav('items',this)" data-page="items"><span class="icon">📦</span>Item List</button>
+      <button class="nav-btn" onclick="nav('stock',this)" data-page="stock"><span class="icon">🏭</span>Stock & Cost</button>
+      <div class="sidebar-section">Reports</div>
+      <button class="nav-btn" onclick="nav('cust-statement',this)" data-page="cust-statement"><span class="icon">🧾</span>Customer Statement</button>
+      <button class="nav-btn" onclick="nav('company-statement',this)" data-page="company-statement"><span class="icon">📊</span>Company Statement</button>
+      <div class="sidebar-section">System</div>
+      <button class="nav-btn" onclick="doAutoBackup(false)" data-page=""><span class="icon">💾</span>Backup Now</button>
+      <button class="nav-btn" onclick="openImportExport()" data-page=""><span class="icon">💾</span>Import / Export</button>
+      <button class="nav-btn" onclick="nav('settings',this)" data-page="settings"><span class="icon">⚙️</span>Settings</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-right">
+        <div style="font-size:12px;color:var(--gray-400)" id="topbar-date"></div>
+        <div id="backup-status" style="font-size:11px;color:var(--gray-400);cursor:pointer" onclick="doAutoBackup(false)" title="Click to backup now"></div>
+        <div id="sync-status" class="sync-badge sync-offline"><span class="dot"></span><span id="sync-label">Not configured</span></div>
+      </div>
+    </div>
+    <div class="content">
+
+  <!-- DASHBOARD -->
+  <div id="pg-dashboard" class="pg on">
+    <!-- Date filter bar -->
+    <div class="card" style="margin-bottom:14px;padding:14px 18px">
+      <div class="flex" style="flex-wrap:wrap;gap:10px;align-items:flex-end">
+        <div>
+          <label style="margin-bottom:3px">Filter Mode</label>
+          <select id="dash-mode" onchange="onDashModeChange()" style="width:140px">
+            <option value="all">All Time</option>
+            <option value="month">By Month</option>
+            <option value="range">Date Range</option>
+          </select>
+        </div>
+        <div id="dash-month-wrap" style="display:none">
+          <label style="margin-bottom:3px">Month</label>
+          <input type="month" id="dash-month" onchange="renderDash()" style="width:160px">
+        </div>
+        <div id="dash-range-wrap" style="display:none;gap:8px" class="flex">
+          <div><label style="margin-bottom:3px">From</label><input type="date" id="dash-from" onchange="renderDash()" style="width:150px"></div>
+          <div><label style="margin-bottom:3px">To</label><input type="date" id="dash-to" onchange="renderDash()" style="width:150px"></div>
+        </div>
+        <button class="btn btn-sm" onclick="document.getElementById('dash-mode').value='all';onDashModeChange()">Reset</button>
+      </div>
+    </div>
+    <div class="metrics" id="dash-metrics"></div>
+    <div class="dash-grid">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Top Customers by Balance</div>
+        <div id="dash-cust-bars"></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Profit by Item (SAR)</div>
+        <div id="dash-profit-bars"></div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="card">
+      <div class="card-title">Invoices <span id="dash-period-label" style="font-weight:400;color:var(--gray-400);font-size:11px"></span></div>
+      <table><thead><tr><th>Invoice #</th><th>Customer</th><th>Date</th><th>Total (SAR)</th><th>Paid (SAR)</th><th>Balance (SAR)</th><th>Status</th></tr></thead>
+      <tbody id="dash-list"></tbody></table>
+    </div>
+  </div>
+
+  <!-- NEW INVOICE -->
+  <div id="pg-new-invoice" class="pg">
+    <div class="card">
+      <div class="flexb" style="margin-bottom:16px">
+        <div><div style="font-size:11px;color:var(--gray-500);margin-bottom:2px">Invoice Number</div><div class="inv-no" id="fn-num">INV-0001</div></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--gray-500);margin-bottom:2px">Date</div><div style="font-size:13px;font-weight:500" id="fn-date"></div></div>
+      </div>
+      <div class="fr fr2">
+        <div><label>Customer Name *</label><input id="fn-cust" list="cust-dl" placeholder="Type or select customer" oninput="onCustIn()"><datalist id="cust-dl"></datalist></div>
+        <div><label>Customer Address</label><input id="fn-addr" placeholder="City, Country"></div>
+      </div>
+      <div class="fr fr2">
+        <div><label>Due Date</label><input id="fn-due" type="date"></div>
+      </div>
+      <div style="margin:14px 0 6px;font-size:11px;font-weight:500;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em">Section 1 — Items</div>
+      <table class="it">
+        <thead><tr><th style="width:4%">S/N</th><th style="width:28%">Description / Item</th><th style="width:8%">Qty</th><th style="width:15%">Unit Price (SAR)</th><th style="width:8%">Disc%</th><th style="width:14%;text-align:right">Total (SAR)</th><th style="width:14%">Profit (SAR)</th><th style="width:6%">Show</th><th style="width:3%"></th></tr></thead>
+        <tbody id="fn-items"></tbody>
+      </table>
+      <button class="btn btn-sm" onclick="addRow()" style="margin:8px 0 14px">+ Add Row</button>
+      <div class="tot-wrap" id="tot1-wrap">
+        <table><tr class="tgrand"><td>Total (SAR)</td><td class="rt" id="t1">0.00</td></tr></table>
+      </div>
+
+      <div style="margin:18px 0 6px;font-size:11px;font-weight:500;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em">Section 2 — Additional Items</div>
+      <table class="it">
+        <thead><tr><th style="width:4%">S/N</th><th style="width:28%">Description / Item</th><th style="width:8%">Qty</th><th style="width:15%">Unit Price (SAR)</th><th style="width:8%">Disc%</th><th style="width:14%;text-align:right">Total (SAR)</th><th style="width:14%">Profit (SAR)</th><th style="width:6%">Show</th><th style="width:3%"></th></tr></thead>
+        <tbody id="fn-items2"></tbody>
+      </table>
+      <button class="btn btn-sm" onclick="addRow2()" style="margin:8px 0 14px">+ Add Row</button>
+      <div class="tot-wrap">
+        <table>
+          <tr><td style="color:var(--gray-500)">Additional Total (SAR)</td><td class="rt" id="t2">0.00</td></tr>
+          <tr class="tgrand"><td>Sub Total (SAR)</td><td class="rt" id="tg">0.00</td></tr>
+        </table>
+      </div>
+      <!-- Profit summary (visible while making invoice, not printed) -->
+      <div id="profit-summary" style="margin-top:10px;padding:10px 14px;background:var(--green-light);border:1px solid var(--green-mid);border-radius:var(--radius);display:none">
+        <span style="font-size:12px;font-weight:600;color:var(--green)">📈 Estimated Profit: SAR <span id="profit-total">0.00</span></span>
+        <span style="font-size:11px;color:var(--gray-500);margin-left:12px">(for items with cost data · not shown on print)</span>
+      </div>
+      <div class="fr fr1" style="margin-top:14px">
+        <div><label>Notes / Payment Terms</label><textarea id="fn-notes" rows="2" placeholder="e.g. Payment due within 30 days. Bank: IBAN SA00..."></textarea></div>
+      </div>
+      <div class="flex" style="justify-content:flex-end;margin-top:12px">
+        <button class="btn" onclick="clearForm()">Clear</button>
+        <button class="btn btn-primary" onclick="saveInvoice()">Save Invoice</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL INVOICES -->
+  <div id="pg-invoices" class="pg">
+    <div class="flexb" style="margin-bottom:12px">
+      <div class="flex">
+        <input id="inv-q" placeholder="Search..." style="width:170px" oninput="renderInvs()">
+        <select id="inv-f" onchange="renderInvs()" style="width:130px">
+          <option value="">All Status</option><option value="pending">Pending</option>
+          <option value="partial">Partial</option><option value="paid">Paid</option><option value="overdue">Overdue</option>
+        </select>
+      </div>
+      <button class="btn btn-success btn-sm" onclick="exportAllExcel()">↓ Export All (Excel)</button>
+    </div>
+    <div class="card">
+      <table><thead><tr><th>Invoice #</th><th>Customer</th><th>Date</th><th>Due</th><th>Total (SAR)</th><th>Paid (SAR)</th><th>Balance (SAR)</th><th>Profit (SAR)</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="inv-table"></tbody></table>
+    </div>
+  </div>
+
+  <!-- INVOICE DETAIL -->
+  <div id="pg-inv-detail" class="pg">
+    <div class="flex" style="margin-bottom:14px;flex-wrap:wrap;gap:6px">
+      <button class="btn btn-sm" id="det-back">← Back</button>
+      <button class="btn btn-sm btn-primary" onclick="printInv(currentId)">🖨 Print / PDF</button>
+      <button class="btn btn-sm btn-success" onclick="exportInvExcel(currentId)">↓ Excel</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteInv(currentId)">Delete</button>
+    </div>
+    <div class="card">
+      <div class="det-grid">
+        <div>
+          <div class="inv-no" id="det-num"></div>
+          <div id="det-dates" style="font-size:12px;color:var(--gray-500);margin-top:4px;line-height:1.8"></div>
+          <div style="margin-top:6px" id="det-status"></div>
+        </div>
+        <div id="det-company" style="text-align:right;font-size:12px;color:var(--gray-500);line-height:1.8"></div>
+      </div>
+      <div class="det-grid" style="margin-bottom:0;padding-top:12px;border-top:0.5px solid var(--gray-200)">
+        <div><div style="font-size:11px;font-weight:500;margin-bottom:4px;color:var(--gray-500)">BILL TO</div><div id="det-cust" style="font-size:13px;line-height:1.7"></div></div>
+        <div id="det-gttl" style="text-align:right"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Items</div>
+      <table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th style="text-align:right">Unit Price</th><th>Disc%</th><th style="text-align:right">Total (SAR)</th><th style="text-align:right">Profit (SAR)</th></tr></thead>
+      <tbody id="det-items"></tbody></table>
+      <div style="margin-top:14px;font-size:11px;font-weight:500;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em">Section 2 — Additional Items</div>
+      <table style="margin-top:8px"><thead><tr><th>#</th><th>Description</th><th>Qty</th><th style="text-align:right">Unit Price</th><th>Disc%</th><th style="text-align:right">Total (SAR)</th><th style="text-align:right">Profit (SAR)</th></tr></thead>
+      <tbody id="det-items2"></tbody></table>
+      <div class="tot-wrap" id="det-tots" style="margin-top:8px"></div>
+      <div id="det-profit-summary" style="display:none;margin-top:10px;padding:10px 14px;border-radius:var(--radius)">
+        <span style="font-size:13px;font-weight:600">📈 Invoice Profit: SAR <span id="det-profit-val"></span></span>
+        <span style="font-size:11px;color:var(--gray-500);margin-left:8px">(based on avg cost at time of sale)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Payment Tracking</div>
+      <table><thead><tr><th>Date</th><th>Amount (SAR)</th><th>Note</th><th></th></tr></thead>
+      <tbody id="det-pays"></tbody></table>
+      <div id="det-psum" style="text-align:right;margin-top:8px;font-size:13px;padding-top:8px;border-top:0.5px solid var(--gray-200)"></div>
+      <div class="pay-sect">
+        <div style="font-size:12px;font-weight:500;color:var(--gray-500);margin-bottom:8px">Add Payment</div>
+        <div class="fr fr3">
+          <div><label>Date</label><input type="date" id="pay-d"></div>
+          <div><label>Amount (SAR)</label><input type="number" id="pay-a" placeholder="0.00" min="0" step="any"></div>
+          <div><label>Note</label><input id="pay-n" placeholder="Bank transfer, cash..."></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addPayment()">Add Payment</button>
+      </div>
+    </div>
+    <div class="card" id="det-notes-c" style="display:none">
+      <div class="card-title">Notes</div>
+      <div id="det-notes" style="font-size:13px;color:var(--gray-500)"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div id="pg-customers" class="pg">
+    <div id="cust-lv"><div class="cg" id="cust-grid"></div></div>
+    <div id="cust-dv" style="display:none">
+      <div class="flex" style="margin-bottom:14px">
+        <button class="btn btn-sm" onclick="backCust()">← Customers</button>
+        <div class="avatar" id="ca-av"></div>
+        <div><div style="font-weight:500;font-size:15px" id="ca-name"></div><div style="font-size:12px;color:var(--gray-500)" id="ca-meta"></div></div>
+      </div>
+      <div class="metrics" id="ca-mets" style="grid-template-columns:repeat(3,minmax(0,1fr))"></div>
+      <div class="card">
+        <div class="card-title">Invoice History</div>
+        <table><thead><tr><th>Invoice #</th><th>Date</th><th>Total (SAR)</th><th>Paid (SAR)</th><th>Balance (SAR)</th><th>Status</th><th></th></tr></thead>
+        <tbody id="ca-tbl"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM LIST MANAGER -->
+  <div id="pg-items" class="pg">
+    <div class="card">
+      <div class="card-title">Item List Manager</div>
+      <p class="section-tip" style="margin-bottom:14px">These items appear in the dropdown when creating invoices.</p>
+      <div class="fr fr2" style="margin-bottom:0">
+        <div>
+          <label>New Item Name</label>
+          <div class="flex">
+            <input id="new-item-input" placeholder="e.g. Consulting Services" onkeydown="if(event.key==='Enter')addItem()">
+            <button class="btn btn-primary btn-sm" onclick="addItem()" style="white-space:nowrap">+ Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Current Items (<span id="item-count">0</span>)</div>
+      <table>
+        <thead><tr><th>#</th><th>Item Name</th><th style="width:160px">Actions</th></tr></thead>
+        <tbody id="items-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STOCK & COST PAGE -->
+  <div id="pg-stock" class="pg">
+    <div class="card">
+      <div class="card-title">Add Stock Purchase</div>
+      <p class="section-tip" style="margin-bottom:14px">Record stock purchases. Cost is averaged (FIFO-averaging: cost keeps averaging while stock > 0; resets to new purchase price when stock reaches zero).</p>
+      <div class="fr fr4" style="margin-bottom:0">
+        <div><label>Item</label><select id="stk-item" style="width:100%"><option value="">-- Select Item --</option></select></div>
+        <div><label>Qty Purchased</label><input type="number" id="stk-qty" placeholder="0" min="0" step="any"></div>
+        <div><label>Cost per Unit (SAR)</label><input type="number" id="stk-cost" placeholder="0.00" min="0" step="any"></div>
+        <div><label>Date</label><input type="date" id="stk-date"></div>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn btn-primary btn-sm" onclick="addStock()">+ Add Stock</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Current Stock & Average Cost</div>
+      <table>
+        <thead><tr><th>Item</th><th style="text-align:right">Qty in Stock</th><th style="text-align:right">Avg Cost (SAR)</th><th style="text-align:right">Stock Value (SAR)</th><th>Actions</th></tr></thead>
+        <tbody id="stock-table"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Purchase History</div>
+      <table>
+        <thead><tr><th>Date</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Cost/Unit (SAR)</th><th style="text-align:right">Total Cost (SAR)</th><th></th></tr></thead>
+        <tbody id="purchase-history"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="pg-settings" class="pg">
+    <!-- CLOUD SETUP CARD -->
+    <div class="card" style="border:2px solid var(--blue-mid);background:linear-gradient(135deg,var(--blue-light),#fff)">
+      <div class="card-title" style="color:var(--blue)">☁️ Firebase Cloud Sync Setup</div>
+      <p style="font-size:12px;color:var(--gray-600);margin-bottom:14px;line-height:1.6">
+        Paste your Firebase project configuration below to enable automatic cloud sync across all browsers and devices.<br>
+        <strong>Steps:</strong> Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--blue)">console.firebase.google.com</a> → Create project → Firestore Database → Project Settings → Your apps → Add Web App → Copy config.
+      </p>
+      <div style="background:var(--amber-light);border:1px solid var(--amber-mid);border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--amber)">
+        ⚠️ <strong>GitHub Pages users:</strong> You must add your GitHub Pages domain (<code>YOUR-USERNAME.github.io</code>) to Firebase → Authentication → Settings → Authorized Domains — otherwise cloud sync will be blocked.
+      </div>
+      <div class="fr fr2">
+        <div><label>API Key</label><input id="fb-apiKey" placeholder="AIzaSy..."></div>
+        <div><label>Auth Domain</label><input id="fb-authDomain" placeholder="your-project.firebaseapp.com"></div>
+      </div>
+      <div class="fr fr2">
+        <div><label>Project ID</label><input id="fb-projectId" placeholder="your-project-id"></div>
+        <div><label>Storage Bucket</label><input id="fb-storageBucket" placeholder="your-project.appspot.com"></div>
+      </div>
+      <div class="fr fr2">
+        <div><label>Messaging Sender ID</label><input id="fb-messagingSenderId" placeholder="123456789"></div>
+        <div><label>App ID</label><input id="fb-appId" placeholder="1:123:web:abc..."></div>
+      </div>
+      <div class="flex" style="justify-content:flex-end;margin-top:10px;gap:8px">
+        <button class="btn btn-danger btn-sm" onclick="clearFirebaseConfig()">Clear Config</button>
+        <button class="btn btn-primary" onclick="saveFirebaseConfig()">💾 Save & Connect</button>
+      </div>
+      <div id="fb-status-msg" style="margin-top:10px;font-size:12px;display:none"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Company Information</div>
+      <div class="fr fr2">
+        <div><label>Company Name</label><input id="s-name" placeholder="Your Company Name"></div>
+        <div><label>Phone / Email</label><input id="s-phone" placeholder="+966-XXX-XXXX"></div>
+      </div>
+      <div class="fr fr2">
+        <div><label>Address</label><input id="s-addr" placeholder="Address, City, Country"></div>
+        <div><label>VAT Number</label><input id="s-vat" placeholder="VAT / CR Number"></div>
+      </div>
+      <div class="fr fr2">
+        <div><label>Bank Name</label><input id="s-bank" placeholder="Al Rajhi Bank / SNB..."></div>
+        <div><label>IBAN</label><input id="s-iban" placeholder="SA00 0000 0000 0000 0000 0000"></div>
+      </div>
+      <div class="fr fr1">
+        <div>
+          <label>Company Logo</label>
+          <input type="file" id="s-logo" accept="image/*" onchange="handleLogo(this)" style="padding:4px">
+          <div class="section-tip">Logo appears on printed invoices. Recommended: PNG with transparent background.</div>
+          <div id="logo-prev"></div>
+        </div>
+      </div>
+      <div class="flex" style="justify-content:flex-end;margin-top:14px">
+        <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTATIONS -->
+  <div id="pg-quotations" class="pg">
+    <div class="flexb" style="margin-bottom:12px">
+      <div class="page-header" style="margin:0"><h2>Quotations</h2><p style="margin:0">Create and manage price quotations for customers.</p></div>
+      <button class="btn btn-primary" onclick="showNewQuotation()">+ New Quotation</button>
+    </div>
+    <!-- Quotation list -->
+    <div id="qt-lv">
+      <div class="card">
+        <table><thead><tr><th>Quote #</th><th>Customer</th><th>Date</th><th>Valid Until</th><th>Total (SAR)</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="qt-table"></tbody></table>
+      </div>
+    </div>
+    <!-- New/Edit Quotation form -->
+    <div id="qt-form" style="display:none">
+      <div class="flex" style="margin-bottom:12px">
+        <button class="btn btn-sm" onclick="hideQuotationForm()">← Back to Quotations</button>
+      </div>
+      <div class="card">
+        <div class="flexb" style="margin-bottom:16px">
+          <div><div style="font-size:11px;color:var(--gray-500);margin-bottom:2px">Quotation Number</div><div class="inv-no" id="qt-num">QT-0001</div></div>
+          <div style="text-align:right"><div style="font-size:11px;color:var(--gray-500);margin-bottom:2px">Date</div><div style="font-size:13px;font-weight:500" id="qt-date-lbl"></div></div>
+        </div>
+        <div class="fr fr2">
+          <div><label>Customer Name *</label><input id="qt-cust" list="cust-dl" placeholder="Type or select customer" oninput="onQtCustIn()"></div>
+          <div><label>Customer Address</label><input id="qt-addr" placeholder="City, Country"></div>
+        </div>
+        <div class="fr fr2">
+          <div><label>Valid Until</label><input id="qt-valid" type="date"></div>
+          <div><label>Subject / Reference</label><input id="qt-subject" placeholder="e.g. Price quotation for supplies"></div>
+        </div>
+        <div style="margin:14px 0 6px;font-size:11px;font-weight:500;color:var(--gray-500);text-transform:uppercase;letter-spacing:.04em">Items</div>
+        <table class="it">
+          <thead><tr><th style="width:4%">S/N</th><th style="width:32%">Description / Item</th><th style="width:8%">Qty</th><th style="width:16%">Unit Price (SAR)</th><th style="width:8%">Disc%</th><th style="width:14%;text-align:right">Total (SAR)</th><th style="width:3%"></th></tr></thead>
+          <tbody id="qt-items"></tbody>
+        </table>
+        <button class="btn btn-sm" onclick="addQtRow()" style="margin:8px 0 14px">+ Add Row</button>
+        <div class="tot-wrap">
+          <table><tr class="tgrand"><td>Total (SAR)</td><td class="rt" id="qt-total">0.00</td></tr></table>
+        </div>
+        <div class="fr fr1" style="margin-top:14px">
+          <div><label>Notes / Terms</label><textarea id="qt-notes" rows="2" placeholder="e.g. Prices valid for 30 days. Delivery within 7 working days."></textarea></div>
+        </div>
+        <div class="flex" style="justify-content:flex-end;margin-top:12px;gap:8px">
+          <button class="btn" onclick="hideQuotationForm()">Cancel</button>
+          <button class="btn btn-success" onclick="printQuotation()">🖨 Print Quotation</button>
+          <button class="btn btn-primary" onclick="saveQuotation()">💾 Save Quotation</button>
+        </div>
+      </div>
+    </div>
+    <!-- Quotation detail view -->
+    <div id="qt-dv" style="display:none">
+      <div class="flex" style="margin-bottom:12px;flex-wrap:wrap;gap:6px">
+        <button class="btn btn-sm" onclick="backToQuotations()">← Quotations</button>
+        <button class="btn btn-sm btn-primary" onclick="printQuotationById(currentQtId)">🖨 Print / PDF</button>
+        <button class="btn btn-sm btn-success" onclick="convertQuotationToInvoice(currentQtId)">⚡ Convert to Invoice</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteQuotation(currentQtId)">Delete</button>
+      </div>
+      <div class="card">
+        <div class="det-grid">
+          <div><div class="inv-no" id="qtd-num"></div><div id="qtd-dates" style="font-size:12px;color:var(--gray-500);margin-top:4px;line-height:1.8"></div><div style="margin-top:6px" id="qtd-status"></div></div>
+          <div id="qtd-company" style="text-align:right;font-size:12px;color:var(--gray-500);line-height:1.8"></div>
+        </div>
+        <div class="det-grid" style="margin-bottom:0;padding-top:12px;border-top:0.5px solid var(--gray-200)">
+          <div><div style="font-size:11px;font-weight:500;margin-bottom:4px;color:var(--gray-500)">QUOTE TO</div><div id="qtd-cust" style="font-size:13px;line-height:1.7"></div></div>
+          <div id="qtd-gttl" style="text-align:right"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Items</div>
+        <table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th style="text-align:right">Unit Price</th><th>Disc%</th><th style="text-align:right">Total (SAR)</th></tr></thead>
+        <tbody id="qtd-items"></tbody></table>
+        <div class="tot-wrap" id="qtd-tots" style="margin-top:8px"></div>
+      </div>
+      <div class="card" id="qtd-notes-c" style="display:none">
+        <div class="card-title">Notes / Terms</div>
+        <div id="qtd-notes" style="font-size:13px;color:var(--gray-500)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER STATEMENT -->
+  <div id="pg-cust-statement" class="pg">
+    <div class="page-header"><h2>Customer Statement</h2><p>View a detailed statement for any customer.</p></div>
+    <div class="card">
+      <div class="fr fr3" style="margin-bottom:0">
+        <div>
+          <label>Select Customer</label>
+          <select id="cs-cust" onchange="renderCustStatement()" style="width:100%">
+            <option value="">-- Select Customer --</option>
+          </select>
+        </div>
+        <div><label>From Date</label><input type="date" id="cs-from" onchange="renderCustStatement()"></div>
+        <div><label>To Date</label><input type="date" id="cs-to" onchange="renderCustStatement()"></div>
+      </div>
+    </div>
+    <div id="cs-content" style="display:none">
+      <div class="card">
+        <div class="flexb" style="margin-bottom:16px">
+          <div>
+            <div style="font-size:18px;font-weight:700;color:var(--gray-900)" id="cs-cust-name"></div>
+            <div style="font-size:12px;color:var(--gray-500)" id="cs-period"></div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="printCustStatement()">🖨 Print Statement</button>
+        </div>
+        <div class="metrics" id="cs-mets" style="grid-template-columns:repeat(4,1fr)"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Invoice & Payment Details</div>
+        <table>
+          <thead><tr><th>Invoice #</th><th>Date</th><th>Amount (SAR)</th><th>Paid (SAR)</th><th>Balance (SAR)</th><th>Status</th><th>Payments</th></tr></thead>
+          <tbody id="cs-tbl"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPANY STATEMENT -->
+  <div id="pg-company-statement" class="pg">
+    <div class="page-header"><h2>Company Statement</h2><p>Full business overview — select what to include.</p></div>
+    <div class="card">
+      <div class="card-title">Report Options</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="cs2-sales" checked onchange="renderCompanyStatement()"> Sales Summary</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="cs2-customers" checked onchange="renderCompanyStatement()"> Customer Balances</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="cs2-profit" checked onchange="renderCompanyStatement()"> Profit & Loss</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="cs2-stock" checked onchange="renderCompanyStatement()"> Stock Summary</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="cs2-topitems" checked onchange="renderCompanyStatement()"> Top Items by Profit</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="cs2-invlist" onchange="renderCompanyStatement()"> Full Invoice List</label>
+      </div>
+      <div class="flex" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div><label>From Date</label><input type="date" id="cs2-from" onchange="renderCompanyStatement()" style="width:160px"></div>
+        <div><label>To Date</label><input type="date" id="cs2-to" onchange="renderCompanyStatement()" style="width:160px"></div>
+        <button class="btn btn-sm" onclick="document.getElementById('cs2-from').value='';document.getElementById('cs2-to').value='';renderCompanyStatement()">All Time</button>
+        <button class="btn btn-primary btn-sm" onclick="printCompanyStatement()">🖨 Print Report</button>
+      </div>
+    </div>
+    <div id="cs2-content"></div>
+  </div>
+
+  </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- IMPORT/EXPORT MODAL -->
+<div class="modal-overlay" id="ie-modal">
+  <div class="modal">
+    <h3>💾 Import / Export Data</h3>
+    <p>Export all your data as a JSON backup file, or import a previously exported backup.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-primary" onclick="exportJSON()" style="justify-content:center">⬇ Export All Data (JSON Backup)</button>
+      <button class="btn btn-success" onclick="exportAllExcel()" style="justify-content:center">⬇ Export Invoices (Excel)</button>
+      <div style="border-top:1px solid var(--gray-200);padding-top:10px">
+        <label style="margin-bottom:6px">Import JSON Backup</label>
+        <input type="file" id="import-file" accept=".json" style="margin-bottom:8px">
+        <button class="btn btn-amber" onclick="importJSON()" style="justify-content:center;width:100%">⬆ Import & Restore Data</button>
+        <p style="font-size:11px;color:var(--red);margin-top:6px;margin-bottom:0">⚠ Import will overwrite all current data.</p>
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+const DEFAULT_ITEMS=["Afandi - Yousf (Masri)","Banana (America)","Banana (Sarbathali)","Cabbage white","Capsicum Green (Roomi)","Carrot bagala","Cauliflower","Chiranga (Kadhu)","Chemb","GARLIC BAG","GARLIC PEALED BAG","GINGER 2.5kg","Khiyar small box","Koosa","Lemon small sella","Methy leaf","Onion (Big) misri","Potato (Big)","Tomato (Big)","Tomato (Big) bagala"];
+let ITEMS=[...DEFAULT_ITEMS];
+
+let D={invoices:[],nextNum:1};
+let S={companyName:'',address:'',phone:'',vatNo:'',bankName:'',iban:'',logo:''};
+// Stock: {itemName: {qty, avgCost, purchases:[{id,date,qty,cost}]}}
+let STOCK={};
+let currentId=null, prevPg='invoices';
+
+// ── FIREBASE CLOUD SYNC ──
+let db=null, DOC_REF=null, _fbUnsub=null, _saveTimer=null;
+
+function setSyncStatus(state){
+  const el=document.getElementById('sync-status');
+  const lbl=document.getElementById('sync-label');
+  if(!el||!lbl)return;
+  el.className='sync-badge sync-'+state;
+  const labels={synced:'☁ Synced',syncing:'↑ Syncing…',error:'⚠ Sync Error',offline:'○ Local Only'};
+  lbl.textContent=labels[state]||state;
+}
+
+function fixInvoices(invArr){
+  (invArr||[]).forEach(inv=>{
+    if(!inv.payments)inv.payments=[];
+    if(inv.items2===undefined)inv.items2=[];
+    if(inv.total1===undefined)inv.total1=typeof inv.sub==='number'?inv.sub:0;
+    if(inv.total2===undefined)inv.total2=0;
+    if(inv.grand===undefined)inv.grand=inv.total1+inv.total2;
+  });
+}
+
+function initFirebase(cfg){
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    db=firebase.firestore();
+    DOC_REF=db.collection('mbrillo').doc('workspace');
+    setSyncStatus('syncing');
+    // One-time fetch first
+    DOC_REF.get().then(snap=>{
+      if(snap.exists){
+        const data=snap.data();
+        if(data.D){D=data.D;fixInvoices(D.invoices);}
+        if(data.S)S=data.S;
+        if(data.ITEMS)ITEMS=data.ITEMS;
+        if(data.STOCK)STOCK=data.STOCK;
+        // Save to localStorage as cache
+        try{localStorage.setItem('invoice-system-data',JSON.stringify(D));}catch(e){}
+        try{localStorage.setItem('inv-settings-v1',JSON.stringify(S));}catch(e){}
+        try{localStorage.setItem('inv-items-v1',JSON.stringify(ITEMS));}catch(e){}
+        try{localStorage.setItem('inv-stock-v1',JSON.stringify(STOCK));}catch(e){}
+      } else {
+        // New cloud, push local data up
+        pushAllToCloud();
+      }
+      setSyncStatus('synced');
+      init();
+      // Start real-time listener AFTER init
+      startCloudListener();
+    }).catch(err=>{
+      console.error('Firebase fetch error:',err);
+      setSyncStatus('error');
+      loadFromLocal(); init();
+    });
+  }catch(err){
+    console.error('Firebase init error:',err);
+    setSyncStatus('error');
+    loadFromLocal(); init();
+  }
+}
+
+function startCloudListener(){
+  if(_fbUnsub)_fbUnsub();
+  _fbUnsub=DOC_REF.onSnapshot(snap=>{
+    if(!snap.exists||snap.metadata.hasPendingWrites)return; // ignore own writes
+    const data=snap.data();
+    if(data.D){D=data.D;fixInvoices(D.invoices);}
+    if(data.S)S=data.S;
+    if(data.ITEMS)ITEMS=data.ITEMS;
+    if(data.STOCK)STOCK=data.STOCK;
+    setSyncStatus('synced');
+    refreshCurrentPage();
+  },err=>{setSyncStatus('error');});
+}
+
+function refreshCurrentPage(){
+  const active=document.querySelector('.pg.on');
+  if(!active)return;
+  const id=active.id.replace('pg-','');
+  if(id==='dashboard')renderDash();
+  else if(id==='invoices')renderInvs();
+  else if(id==='customers')renderCusts();
+  else if(id==='stock')renderStockPage();
+  else if(id==='items')renderItems();
+  else if(id==='quotations')renderQuotations();
+  else if(id==='cust-statement')renderCustStatement();
+  else if(id==='company-statement')renderCompanyStatement();
+  // skip new-invoice (user may be typing) and inv-detail
+}
+
+function pushAllToCloud(){
+  if(!DOC_REF)return;
+  DOC_REF.set({D,S,ITEMS,STOCK}).catch(e=>setSyncStatus('error'));
+}
+
+function cloudSave(){
+  if(!DOC_REF){return;}
+  setSyncStatus('syncing');
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(()=>{
+    DOC_REF.set({D,S,ITEMS,STOCK})
+      .then(()=>setSyncStatus('synced'))
+      .catch(err=>{console.error(err);setSyncStatus('error');});
+  },600); // debounce 600ms
+}
+
+// ── LOAD / SAVE ──
+function loadFromLocal(){
+  try{const r=localStorage.getItem('invoice-system-data');if(r)D=JSON.parse(r);}catch(e){}
+  try{const r=localStorage.getItem('inv-settings-v1');if(r)S=JSON.parse(r);}catch(e){}
+  try{const r=localStorage.getItem('inv-items-v1');if(r)ITEMS=JSON.parse(r);}catch(e){}
+  try{const r=localStorage.getItem('inv-stock-v1');if(r)STOCK=JSON.parse(r);}catch(e){}
+  loadQuotations();
+  fixInvoices(D.invoices);
+}
+
+async function loadAll(){
+  // Always try hardcoded config first, then localStorage fallback
+  const fbCfg = (
+    (HARDCODED_FB_CFG.apiKey && !HARDCODED_FB_CFG.apiKey.startsWith('REPLACE_'))
+      ? HARDCODED_FB_CFG
+      : getFirebaseConfig()
+  );
+  if(fbCfg && fbCfg.apiKey && fbCfg.projectId){
+    initFirebase(fbCfg);
+  } else {
+    setSyncStatus('offline');
+    loadFromLocal();
+    init();
+  }
+}
+
+// Save to both localStorage AND cloud
+const saveD=()=>{
+  try{localStorage.setItem('invoice-system-data',JSON.stringify(D));}catch(e){}
+  cloudSave();
+};
+const saveS=()=>{
+  try{localStorage.setItem('inv-settings-v1',JSON.stringify(S));}catch(e){}
+  cloudSave();
+};
+const saveItems=()=>{
+  try{localStorage.setItem('inv-items-v1',JSON.stringify(ITEMS));}catch(e){}
+  cloudSave();
+};
+const saveStock=()=>{
+  try{localStorage.setItem('inv-stock-v1',JSON.stringify(STOCK));}catch(e){}
+  cloudSave();
+};
+
+// ── HARDCODED FIREBASE CONFIG ──
+// ↓↓↓ FILL THESE IN FROM YOUR FIREBASE CONSOLE → Project Settings → Your Apps ↓↓↓
+const HARDCODED_FB_CFG = {
+  apiKey:            "AIzaSyAXbjk3pzcxppL1qlVfTkHIU8EqdEp_MwI",
+  authDomain:        "mbrillo-invoices.firebaseapp.com",
+  projectId:         "mbrillo-invoices",
+  storageBucket:     "mbrillo-invoices.firebasestorage.app",
+  messagingSenderId: "366906644278",
+  appId:             "1:366906644278:web:50ed09f9a244bfe25f0597"
+};
+// ↑↑↑ Fill above then save — your friend opens the file and connects automatically ↑↑↑
+
+// ── FIREBASE CONFIG MANAGEMENT ──
+function getFirebaseConfig(){
+  // Hardcoded config takes priority when filled in
+  if(HARDCODED_FB_CFG.apiKey && !HARDCODED_FB_CFG.apiKey.startsWith('REPLACE_')){
+    return HARDCODED_FB_CFG;
+  }
+  try{const r=localStorage.getItem('fb-config-v1');if(r)return JSON.parse(r);}catch(e){}
+  return null;
+}
+
+function saveFirebaseConfig(){
+  const cfg={
+    apiKey:document.getElementById('fb-apiKey').value.trim(),
+    authDomain:document.getElementById('fb-authDomain').value.trim(),
+    projectId:document.getElementById('fb-projectId').value.trim(),
+    storageBucket:document.getElementById('fb-storageBucket').value.trim(),
+    messagingSenderId:document.getElementById('fb-messagingSenderId').value.trim(),
+    appId:document.getElementById('fb-appId').value.trim()
+  };
+  if(!cfg.apiKey||!cfg.projectId){alert('Please enter at least API Key and Project ID.');return;}
+  try{localStorage.setItem('fb-config-v1',JSON.stringify(cfg));}catch(e){}
+  const msg=document.getElementById('fb-status-msg');
+  msg.style.display='block';msg.style.color='var(--blue)';msg.textContent='⏳ Connecting to Firebase…';
+  // Reinitialize
+  if(_fbUnsub){_fbUnsub();_fbUnsub=null;}
+  db=null;DOC_REF=null;
+  try{firebase.app().delete().then(()=>{initFirebase(cfg);}).catch(()=>{initFirebase(cfg);});}
+  catch(e){initFirebase(cfg);}
+  setTimeout(()=>{
+    const s=document.getElementById('sync-label');
+    if(s&&s.textContent.includes('Synced')){
+      msg.style.color='var(--green)';msg.textContent='✓ Connected! Data will now sync across all your browsers.';
+    } else if(s&&s.textContent.includes('Error')){
+      msg.style.color='var(--red)';msg.textContent='✗ Connection failed. Please check your Firebase config and Firestore rules.';
+    }
+  },3000);
+}
+
+function clearFirebaseConfig(){
+  if(!confirm('Remove cloud sync configuration? Data will only be stored locally.'))return;
+  localStorage.removeItem('fb-config-v1');
+  setSyncStatus('offline');
+  if(_fbUnsub){_fbUnsub();_fbUnsub=null;}
+  db=null;DOC_REF=null;
+  document.getElementById('fb-status-msg').style.display='none';
+  ['fb-apiKey','fb-authDomain','fb-projectId','fb-storageBucket','fb-messagingSenderId','fb-appId']
+    .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  alert('Cloud sync removed. Data stays on this device only.');
+}
+
+function loadFbConfigForm(){
+  const cfg=getFirebaseConfig();
+  if(!cfg)return;
+  ['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId'].forEach(k=>{
+    const el=document.getElementById('fb-'+k);
+    if(el)el.value=cfg[k]||'';
+  });
+}
+// ── HELPERS ──
+const fN=n=>parseFloat(n||0).toLocaleString('en-SA',{minimumFractionDigits:2,maximumFractionDigits:2});
+const tod=()=>new Date().toISOString().split('T')[0];
+const fD=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});};
+const padN=n=>'INV-'+String(n).padStart(4,'0');
+const inits=n=>n.trim().split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+const getPaid=inv=>(inv.payments||[]).reduce((s,p)=>s+p.amount,0);
+const getBal=inv=>Math.max(0,inv.grand-getPaid(inv));
+function getStatus(inv){
+  const p=getPaid(inv);
+  if(p>=inv.grand&&inv.grand>0)return'paid';
+  if(p>0)return'partial';
+  if(inv.due&&inv.due<tod())return'overdue';
+  return'pending';
+}
+const BDG={paid:'bdg-paid',pending:'bdg-pending',overdue:'bdg-overdue',partial:'bdg-partial'};
+const badge=s=>`<span class="bdg ${BDG[s]||'bdg-pending'}">${s}</span>`;
+
+// ── STOCK / COST ──
+// Returns avgCost regardless of qty (so profit shows even when stock depleted)
+function getAvgCost(itemName){
+  const s=STOCK[itemName];
+  if(!s||!s.avgCost)return 0;
+  return s.avgCost;
+}
+
+// Returns avgCost snapshot stored on item (used for saved invoices)
+function getItemAvgCostAtSave(it){
+  // If invoice item has stored costSnapshot use it; else fallback to live
+  if(it.costSnapshot!=null&&it.costSnapshot>0)return it.costSnapshot;
+  return getAvgCost(it.desc)||0;
+}
+
+function calcProfitFromItem(it){
+  const avgCost=getItemAvgCostAtSave(it);
+  if(!avgCost)return null;
+  const discFactor=1-(it.disc||0)/100;
+  const revenue=(it.qty||0)*(it.price||0)*discFactor;
+  const cost=(it.qty||0)*avgCost;
+  return revenue-cost;
+}
+
+function addStock(){
+  const item=document.getElementById('stk-item').value;
+  const qty=parseFloat(document.getElementById('stk-qty').value)||0;
+  const cost=parseFloat(document.getElementById('stk-cost').value)||0;
+  const date=document.getElementById('stk-date').value||tod();
+  if(!item){alert('Please select an item.');return;}
+  if(qty<=0){alert('Quantity must be > 0.');return;}
+  if(cost<0){alert('Cost cannot be negative.');return;}
+  if(!STOCK[item])STOCK[item]={qty:0,avgCost:0,purchases:[]};
+  const s=STOCK[item];
+  // FIFO-averaging: if stock <= 0, start fresh avg with this purchase; else weighted average
+  if(s.qty<=0){
+    s.avgCost=cost; // reset avg
+    s.qty=(s.qty||0)+qty; // add to whatever qty (even if negative, brings it up)
+  } else {
+    const totalVal=s.qty*s.avgCost+qty*cost;
+    s.qty+=qty;
+    s.avgCost=totalVal/s.qty;
+  }
+  s.purchases.push({id:'p'+Date.now(),date,qty,cost,totalCost:qty*cost});
+  saveStock();
+  document.getElementById('stk-qty').value='';
+  document.getElementById('stk-cost').value='';
+  renderStockPage();
+}
+
+function renderStockPage(){
+  // populate item dropdown
+  const sel=document.getElementById('stk-item');
+  sel.innerHTML='<option value="">-- Select Item --</option>'+ITEMS.map(i=>`<option>${i}</option>`).join('');
+  // current stock table
+  const rows=[];
+  ITEMS.forEach(item=>{
+    const s=STOCK[item];
+    if(s&&(s.qty!==undefined||s.purchases&&s.purchases.length)){
+      rows.push({item,qty:s.qty||0,avg:s.avgCost||0,val:(s.qty||0)*(s.avgCost||0)});
+    }
+  });
+  document.getElementById('stock-table').innerHTML=rows.length
+    ?rows.map(r=>`<tr>
+        <td>${r.item}</td>
+        <td style="text-align:right;${r.qty<0?'color:var(--red);font-weight:600':r.qty===0?'color:var(--gray-400)':''}">${fN(r.qty)}${r.qty<0?' ⚠':''}</td>
+        <td style="text-align:right">${fN(r.avg)}</td>
+        <td style="text-align:right;${r.qty<0?'color:var(--red)':''}">${r.qty<0?'—':fN(r.val)}</td>
+        <td><button class="btn btn-xs btn-danger" onclick="clearStock('${r.item.replace(/'/g,"\\'")}')">Clear</button></td>
+      </tr>`).join('')
+    :'<tr><td colspan="5" class="empty">No stock recorded yet.</td></tr>';
+  // purchase history
+  const allPurch=[];
+  Object.entries(STOCK).forEach(([item,s])=>{
+    (s.purchases||[]).forEach(p=>allPurch.push({...p,item}));
+  });
+  allPurch.sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('purchase-history').innerHTML=allPurch.length
+    ?allPurch.map(p=>`<tr>
+        <td>${fD(p.date)}</td><td>${p.item}</td>
+        <td style="text-align:right">${fN(p.qty)}</td>
+        <td style="text-align:right">${fN(p.cost)}</td>
+        <td style="text-align:right">${fN(p.totalCost)}</td>
+        <td><button class="btn btn-xs btn-danger" onclick="delPurchase('${p.item.replace(/'/g,"\\'")}','${p.id}')">✕</button></td>
+      </tr>`).join('')
+    :'<tr><td colspan="6" class="empty">No purchase history.</td></tr>';
+}
+
+function clearStock(item){
+  if(!confirm(`Clear all stock data for "${item}"?`))return;
+  delete STOCK[item];
+  saveStock();
+  renderStockPage();
+}
+
+function delPurchase(item,pid){
+  if(!confirm('Remove this purchase record? Stock qty/avg will be recalculated.'))return;
+  const s=STOCK[item]; if(!s)return;
+  s.purchases=s.purchases.filter(p=>p.id!==pid);
+  // recalculate avg from scratch
+  let qty=0,avgCost=0;
+  s.purchases.forEach(p=>{
+    if(qty<=0){qty=p.qty;avgCost=p.cost;}
+    else{const tv=qty*avgCost+p.qty*p.cost;qty+=p.qty;avgCost=tv/qty;}
+  });
+  s.qty=qty; s.avgCost=avgCost;
+  saveStock();
+  renderStockPage();
+}
+
+// Deduct stock when invoice saved — allows negative (oversell shown in red)
+function deductStock(items){
+  items.forEach(it=>{
+    if(!it.desc)return;
+    if(!STOCK[it.desc])STOCK[it.desc]={qty:0,avgCost:it.costSnapshot||0,purchases:[]};
+    STOCK[it.desc].qty-=(it.qty||0); // allow negative
+    saveStock();
+  });
+}
+
+// Calculate profit for form (live, uses current avgCost)
+function calcProfit(itemName, salePrice, qty, disc){
+  const avgCost=getAvgCost(itemName);
+  if(!avgCost)return null;
+  const discFactor=1-(disc||0)/100;
+  const revenue=qty*salePrice*discFactor;
+  const cost=qty*avgCost;
+  return revenue-cost;
+}
+
+// ── NAVIGATION ──
+const PAGE_TITLES={'dashboard':'Dashboard','new-invoice':'New Invoice','invoices':'All Invoices','customers':'Customers','items':'Item List','stock':'Stock & Cost','inv-detail':'Invoice Detail','settings':'Settings','quotations':'Quotations','cust-statement':'Customer Statement','company-statement':'Company Statement'};
+function nav(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+  document.getElementById('topbar-title').textContent=PAGE_TITLES[id]||'';
+  if(id==='items')renderItems();
+  if(id==='dashboard')renderDash();
+  if(id==='invoices')renderInvs();
+  if(id==='customers')renderCusts();
+  if(id==='settings')loadSForm();
+  if(id==='new-invoice')initForm();
+  if(id==='stock')renderStockPage();
+  if(id==='quotations'){renderQuotations();hideQuotationForm();}
+  if(id==='cust-statement')initCustStatement();
+  if(id==='company-statement')renderCompanyStatement();
+}
+
+// ── DASHBOARD FILTER HELPERS ──
+function onDashModeChange(){
+  const mode=document.getElementById('dash-mode').value;
+  document.getElementById('dash-month-wrap').style.display=mode==='month'?'block':'none';
+  document.getElementById('dash-range-wrap').style.display=mode==='range'?'flex':'none';
+  if(mode==='month'&&!document.getElementById('dash-month').value){
+    const n=new Date();
+    document.getElementById('dash-month').value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0');
+  }
+  renderDash();
+}
+
+function getDashInvoices(){
+  const mode=document.getElementById('dash-mode')?document.getElementById('dash-mode').value:'all';
+  let invs=D.invoices;
+  let label='';
+  if(mode==='month'){
+    const m=document.getElementById('dash-month').value;
+    if(m){invs=invs.filter(i=>i.date&&i.date.startsWith(m));label='· '+m;}
+  } else if(mode==='range'){
+    const from=document.getElementById('dash-from').value;
+    const to=document.getElementById('dash-to').value;
+    if(from)invs=invs.filter(i=>i.date>=from);
+    if(to)invs=invs.filter(i=>i.date<=to);
+    if(from||to)label='· '+(from||'...')+' → '+(to||'...');
+  }
+  const lbl=document.getElementById('dash-period-label');
+  if(lbl)lbl.textContent=label;
+  return invs;
+}
+
+// ── DASHBOARD ──
+function renderDash(){
+  const invs=getDashInvoices();
+  const total=invs.reduce((s,i)=>s+i.grand,0);
+  const totalPaid=invs.reduce((s,i)=>s+getPaid(i),0);
+  const outstanding=invs.reduce((s,i)=>s+getBal(i),0);
+  const custs=new Set(invs.map(i=>i.customer)).size;
+
+  // Profit — use costSnapshot stored on each item so it works after stock depletes
+  let totalProfit=0,hasProfit=false;
+  const itemProfitMap={};
+  invs.forEach(inv=>{
+    [...(inv.items||[]),...(inv.items2||[])].forEach(it=>{
+      if(!it.desc)return;
+      const p=calcProfitFromItem(it);
+      if(p!==null){totalProfit+=p;hasProfit=true;
+        itemProfitMap[it.desc]=(itemProfitMap[it.desc]||0)+p;
+      }
+    });
+  });
+
+  document.getElementById('dash-metrics').innerHTML=`
+    <div class="metric"><div class="mlabel">Total Invoiced (SAR)</div><div class="mval">${fN(total)}</div></div>
+    <div class="metric"><div class="mlabel">Collected (SAR)</div><div class="mval" style="color:var(--green)">${fN(totalPaid)}</div></div>
+    <div class="metric"><div class="mlabel">Outstanding (SAR)</div><div class="mval" style="color:var(--amber)">${fN(outstanding)}</div></div>
+    <div class="metric"><div class="mlabel">Customers</div><div class="mval">${custs}</div></div>
+    <div class="metric"><div class="mlabel">Est. Profit (SAR)</div><div class="mval" style="color:${totalProfit>=0?'var(--green)':'var(--red)'}">${hasProfit?fN(totalProfit):'—'}</div></div>
+    <div class="metric"><div class="mlabel">Stock Value (SAR)</div><div class="mval" style="color:var(--purple)">${fN(Object.values(STOCK).reduce((s,x)=>s+Math.max(0,(x.qty||0))*(x.avgCost||0),0))}</div></div>`;
+
+  // Top customers bar chart
+  const custMap={};
+  invs.forEach(inv=>{
+    if(!custMap[inv.customer])custMap[inv.customer]=0;
+    custMap[inv.customer]+=getBal(inv);
+  });
+  const topCusts=Object.entries(custMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxC=topCusts[0]?Math.max(topCusts[0][1],0.01):1;
+  document.getElementById('dash-cust-bars').innerHTML=topCusts.length
+    ?`<div class="bar-wrap">${topCusts.map(([n,v])=>`
+      <div class="bar-item">
+        <div class="bar-label" title="${n}">${n}</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${Math.max(4,v/maxC*100)}%;background:var(--amber)"></div></div>
+        <div class="bar-val">${fN(v)}</div>
+      </div>`).join('')}</div>`
+    :'<div class="empty">No data yet.</div>';
+
+  // Profit by item
+  const topItems=Object.entries(itemProfitMap).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,8);
+  const maxP=topItems[0]?Math.abs(topItems[0][1]):1;
+  document.getElementById('dash-profit-bars').innerHTML=topItems.length
+    ?`<div class="bar-wrap">${topItems.map(([n,v])=>`
+      <div class="bar-item">
+        <div class="bar-label" title="${n}">${n}</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${Math.max(4,Math.abs(v)/maxP*100)}%;background:${v>=0?'var(--green)':'var(--red)'}"></div></div>
+        <div class="bar-val" style="color:${v>=0?'var(--green)':'var(--red)'}">${fN(v)}</div>
+      </div>`).join('')}</div>`
+    :'<div class="empty" style="padding:1.5rem">No stock cost data yet.</div>';
+
+  const sorted=[...invs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  document.getElementById('dash-list').innerHTML=sorted.length
+    ?sorted.map(inv=>`<tr>
+        <td><button class="lbtn" onclick="viewInv('${inv.id}','dashboard')">${inv.number}</button></td>
+        <td>${inv.customer}</td><td>${fD(inv.date)}</td>
+        <td style="text-align:right">${fN(inv.grand)}</td>
+        <td style="text-align:right">${fN(getPaid(inv))}</td>
+        <td style="text-align:right">${fN(getBal(inv))}</td>
+        <td>${badge(getStatus(inv))}</td></tr>`).join('')
+    :'<tr><td colspan="7" class="empty">No invoices for this period.</td></tr>';
+}
+
+function calcInvProfit(inv){
+  let total=0,hasAny=false;
+  [...(inv.items||[]),...(inv.items2||[])].forEach(it=>{
+    const p=calcProfitFromItem(it);
+    if(p!==null){total+=p;hasAny=true;}
+  });
+  return hasAny?total:null;
+}
+
+function renderInvs(){
+  const q=(document.getElementById('inv-q')||{}).value||'';
+  const f=(document.getElementById('inv-f')||{}).value||'';
+  let list=[...D.invoices].sort((a,b)=>b.date.localeCompare(a.date));
+  if(q)list=list.filter(i=>i.customer.toLowerCase().includes(q.toLowerCase())||i.number.toLowerCase().includes(q.toLowerCase()));
+  if(f)list=list.filter(i=>getStatus(i)===f);
+  document.getElementById('inv-table').innerHTML=list.length
+    ?list.map(inv=>{
+        const prof=calcInvProfit(inv);
+        const profHtml=prof===null?'<span style="color:var(--gray-300)">—</span>'
+          :`<span style="color:${prof>=0?'var(--green)':'var(--red)'};font-weight:600">${fN(prof)}</span>`;
+        return`<tr>
+          <td><button class="lbtn" onclick="viewInv('${inv.id}','invoices')">${inv.number}</button></td>
+          <td>${inv.customer}</td><td>${fD(inv.date)}</td><td>${fD(inv.due)}</td>
+          <td style="text-align:right">${fN(inv.grand)}</td>
+          <td style="text-align:right">${fN(getPaid(inv))}</td>
+          <td style="text-align:right">${fN(getBal(inv))}</td>
+          <td style="text-align:right">${profHtml}</td>
+          <td>${badge(getStatus(inv))}</td>
+          <td style="display:flex;gap:4px">
+            <button class="btn btn-xs" onclick="viewInv('${inv.id}','invoices')">View</button>
+            <button class="btn btn-xs btn-danger" onclick="deleteInv('${inv.id}')">Del</button>
+          </td></tr>`;
+      }).join('')
+    :'<tr><td colspan="10" class="empty">No invoices found.</td></tr>';
+}
+
+function viewInv(id,from){
+  currentId=id; prevPg=from||'invoices';
+  document.getElementById('det-back').onclick=()=>goBack();
+  renderDetPage();
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-inv-detail').classList.add('on');
+  document.getElementById('topbar-title').textContent='Invoice Detail';
+}
+
+function goBack(){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+prevPg).classList.add('on');
+  document.getElementById('topbar-title').textContent=PAGE_TITLES[prevPg]||'';
+  const btn=document.querySelector(`.nav-btn[data-page="${prevPg}"]`);
+  if(btn)btn.classList.add('on');
+  if(prevPg==='invoices')renderInvs();
+  if(prevPg==='dashboard')renderDash();
+}
+
+function renderDetPage(){
+  const inv=D.invoices.find(i=>i.id===currentId); if(!inv)return;
+  document.getElementById('det-num').textContent=inv.number;
+  document.getElementById('det-dates').innerHTML=`Date: ${fD(inv.date)}<br>Due: ${fD(inv.due)}`;
+  document.getElementById('det-status').innerHTML=badge(getStatus(inv));
+  document.getElementById('det-company').innerHTML=`
+    ${S.logo?`<img src="${S.logo}" style="max-height:40px;max-width:120px;display:block;margin-left:auto;margin-bottom:6px">`:''}
+    <div style="font-weight:500;color:var(--gray-800)">${S.companyName||'Your Company'}</div>
+    ${S.address?`<div>${S.address}</div>`:''}${S.phone?`<div>${S.phone}</div>`:''}`;
+  document.getElementById('det-cust').innerHTML=`
+    <div style="font-weight:500">${inv.customer}</div>
+    ${inv.address?`<div style="color:var(--gray-500)">${inv.address}</div>`:''}`;
+  const paid=getPaid(inv),bal=getBal(inv);
+  document.getElementById('det-gttl').innerHTML=`
+    <div style="font-size:11px;color:var(--gray-500)">Sub Total</div>
+    <div style="font-size:20px;font-weight:500">SAR ${fN(inv.grand)}</div>
+    ${paid>0?`<div style="font-size:12px;color:var(--green)">Paid: SAR ${fN(paid)}</div>
+    <div style="font-size:12px;color:var(--amber);font-weight:500">Balance: SAR ${fN(bal)}</div>`:''}`;
+  document.getElementById('det-items').innerHTML=(inv.items||[]).map((it,i)=>{
+    const base=it.qty*it.price*(1-it.disc/100);
+    const p=calcProfitFromItem(it);
+    const pHtml=p===null?'<span style="color:var(--gray-300);font-size:11px">no cost</span>'
+      :`<span style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:600">${fN(p)}</span>`;
+    return`<tr><td>${i+1}</td><td>${it.desc||'-'}</td><td style="text-align:center">${it.qty}</td>
+      <td style="text-align:right">${fN(it.price)}</td><td style="text-align:center">${it.disc}%</td>
+      <td style="text-align:right">${fN(base)}</td><td style="text-align:right">${pHtml}</td></tr>`;
+  }).join('');
+  document.getElementById('det-items2').innerHTML=(inv.items2||[]).map((it,i)=>{
+    const base=it.qty*it.price*(1-it.disc/100);
+    const p=calcProfitFromItem(it);
+    const pHtml=p===null?'<span style="color:var(--gray-300);font-size:11px">no cost</span>'
+      :`<span style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:600">${fN(p)}</span>`;
+    return`<tr><td>${i+1}</td><td>${it.desc||'-'}</td><td style="text-align:center">${it.qty}</td>
+      <td style="text-align:right">${fN(it.price)}</td><td style="text-align:center">${it.disc}%</td>
+      <td style="text-align:right">${fN(base)}</td><td style="text-align:right">${pHtml}</td></tr>`;
+  }).join('');
+  // Profit summary for detail page
+  const invProf=calcInvProfit(inv);
+  const ps2=document.getElementById('det-profit-summary');
+  if(invProf!==null){
+    ps2.style.display='block';
+    ps2.style.background=invProf>=0?'var(--green-light)':'var(--red-light)';
+    ps2.style.border='1px solid '+(invProf>=0?'var(--green-mid)':'var(--red-mid)');
+    document.getElementById('det-profit-val').textContent=fN(invProf);
+    document.getElementById('det-profit-val').style.color=invProf>=0?'var(--green)':'var(--red)';
+  } else {
+    ps2.style.display='none';
+  }
+  const t1=inv.total1||inv.sub||0, t2=inv.total2||0;
+  document.getElementById('det-tots').innerHTML=`<div class="tot-wrap"><table>
+    <tr><td style="color:var(--gray-500)">Total (SAR)</td><td class="rt">${fN(t1)}</td></tr>
+    <tr><td style="color:var(--gray-500)">Additional Total (SAR)</td><td class="rt">${fN(t2)}</td></tr>
+    <tr class="tgrand"><td>Sub Total (SAR)</td><td class="rt">${fN(inv.grand)}</td></tr>
+  </table></div>`;
+  renderPays(inv);
+  document.getElementById('pay-d').value=tod();
+  document.getElementById('pay-a').value='';
+  document.getElementById('pay-n').value='';
+  const nc=document.getElementById('det-notes-c');
+  if(inv.notes){nc.style.display='block';document.getElementById('det-notes').textContent=inv.notes;}
+  else nc.style.display='none';
+}
+
+function renderPays(inv){
+  const paid=getPaid(inv),bal=getBal(inv);
+  document.getElementById('det-pays').innerHTML=(inv.payments||[]).length
+    ?inv.payments.map(p=>`<tr><td>${fD(p.date)}</td><td style="text-align:right">${fN(p.amount)}</td>
+        <td>${p.note||''}</td>
+        <td><button class="btn btn-xs btn-danger" onclick="delPay('${p.id}')">✕</button></td></tr>`).join('')
+    :'<tr><td colspan="4" style="color:var(--gray-500);padding:8px;font-size:12px">No payments recorded yet.</td></tr>';
+  document.getElementById('det-psum').innerHTML=`
+    <span style="margin-right:16px;color:var(--green)">Total Paid: <strong>SAR ${fN(paid)}</strong></span>
+    <span style="color:${bal>0?'var(--amber)':'var(--green)'}">Balance Due: <strong>SAR ${fN(bal)}</strong></span>`;
+}
+
+function addPayment(){
+  const inv=D.invoices.find(i=>i.id===currentId); if(!inv)return;
+  const date=document.getElementById('pay-d').value;
+  const amt=parseFloat(document.getElementById('pay-a').value);
+  const note=document.getElementById('pay-n').value;
+  if(!date||!amt||amt<=0){alert('Please enter valid date and amount.');return;}
+  if(!inv.payments)inv.payments=[];
+  inv.payments.push({id:'p-'+Date.now(),date,amount:amt,note});
+  saveD(); renderDetPage();
+}
+
+function delPay(pid){
+  const inv=D.invoices.find(i=>i.id===currentId); if(!inv)return;
+  if(!confirm('Remove this payment?'))return;
+  inv.payments=inv.payments.filter(p=>p.id!==pid);
+  saveD(); renderDetPage();
+}
+
+function deleteInv(id){
+  if(!confirm('Delete this invoice? This cannot be undone.'))return;
+  D.invoices=D.invoices.filter(i=>i.id!==id);
+  saveD();
+  if(currentId===id){currentId=null;goBack();}
+  else{renderInvs();renderDash();}
+}
+
+// ── PRINT ──
+function printInv(id){
+  const inv=D.invoices.find(i=>i.id===id); if(!inv)return;
+  const s=S,paid=getPaid(inv),bal=getBal(inv),st=getStatus(inv);
+  const sc={paid:'#155724',pending:'#856404',overdue:'#721c24',partial:'#0c447c'};
+  const sb={paid:'#d4edda',pending:'#fff3cd',overdue:'#f8d7da',partial:'#cce5ff'};
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${inv.number}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:12px;color:#333;padding:28px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:2px solid #185FA5;margin-bottom:20px}
+.cn{font-size:18px;font-weight:bold;color:#185FA5;margin-bottom:4px}.cm{font-size:11px;color:#666;line-height:1.7}
+.it{font-size:26px;font-weight:bold;color:#185FA5;text-align:right}.im{font-size:12px;color:#555;text-align:right;margin-top:4px;line-height:1.8}
+.bdg{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;background:${sb[st]};color:${sc[st]};font-weight:bold}
+.bs{display:flex;justify-content:space-between;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
+.itbl th{background:#185FA5;color:#fff;padding:7px 8px;text-align:left;font-size:11px}
+.itbl td{padding:6px 8px;border-bottom:1px solid #eee}.itbl tr:last-child td{border-bottom:none}
+.tt{width:260px;margin-left:auto}.tt td{padding:4px 6px}
+.gr{font-weight:bold;font-size:13px;border-top:2px solid #185FA5}
+.ptbl th{background:#f0f0f0;color:#444;padding:6px 8px;text-align:left;font-size:11px;border-bottom:1px solid #ddd}
+.ptbl td{padding:5px 8px;border-bottom:1px solid #eee}
+.nb{background:#f8f9fa;border-radius:4px;padding:12px;margin-top:14px;font-size:12px}
+.bb{background:#e8f4fd;border-radius:4px;padding:12px;margin-top:8px;font-size:12px}
+.ft{margin-top:24px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px}
+.logo{max-height:55px;max-width:140px;margin-bottom:6px;display:block}
+@media print{body{padding:16px}}</style></head><body>
+<div class="hdr">
+  <div>${s.logo?`<img class="logo" src="${s.logo}">`:''}
+    <div class="cn">${s.companyName||'Your Company'}</div>
+    <div class="cm">${s.address||''}<br>${s.phone?'Tel: '+s.phone+'<br>':''}</div>
+  </div>
+  <div><div class="it">INVOICE</div>
+    <div class="im"><strong>${inv.number}</strong><br>Date: ${fD(inv.date)}<br>Due: ${fD(inv.due)}<br><span class="bdg">${st.toUpperCase()}</span></div>
+  </div>
+</div>
+<div class="bs">
+  <div><div style="font-size:10px;font-weight:bold;color:#999;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Bill To</div>
+    <strong>${inv.customer}</strong><br>${inv.address?inv.address+'<br>':''}
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:22px;font-weight:bold;color:#185FA5">SAR ${fN(inv.grand)}</div>
+    <div style="font-size:11px;color:#666">Grand Total</div>
+    ${paid>0?`<div style="font-size:11px;color:#28a745;margin-top:4px">Paid: SAR ${fN(paid)}</div>
+    <div style="font-size:12px;font-weight:bold;color:${bal>0?'#856404':'#155724'}">Balance: SAR ${fN(bal)}</div>`:''}
+  </div>
+</div>
+<table class="itbl">
+  <thead><tr><th>#</th><th>Description</th><th>Qty</th><th style="text-align:right">Unit Price (SAR)</th><th>Disc%</th><th style="text-align:right">Total (SAR)</th></tr></thead>
+  <tbody>${(inv.items||[]).map((it,i)=>{const base=it.qty*it.price*(1-it.disc/100);
+    return`<tr><td>${i+1}</td><td>${it.desc||'-'}</td><td style="text-align:center">${it.qty}</td>
+    <td style="text-align:right">${fN(it.price)}</td><td style="text-align:center">${it.disc}%</td>
+    <td style="text-align:right">${fN(base)}</td></tr>`;}).join('')}
+  </tbody>
+</table>
+${(inv.items2||[]).length?`<h3 style="font-size:12px;font-weight:bold;color:#185FA5;margin:16px 0 8px">Section 2 — Additional Items</h3>
+<table class="itbl">
+  <thead><tr><th>#</th><th>Description</th><th>Qty</th><th style="text-align:right">Unit Price (SAR)</th><th>Disc%</th><th style="text-align:right">Total (SAR)</th></tr></thead>
+  <tbody>${(inv.items2||[]).map((it,i)=>{const base=it.qty*it.price*(1-it.disc/100);
+    return`<tr><td>${i+1}</td><td>${it.desc||'-'}</td><td style="text-align:center">${it.qty}</td>
+    <td style="text-align:right">${fN(it.price)}</td><td style="text-align:center">${it.disc}%</td>
+    <td style="text-align:right">${fN(base)}</td></tr>`;}).join('')}
+  </tbody>
+</table>`:''}
+<table class="tt">
+  <tr><td style="color:#666">Total (SAR)</td><td style="text-align:right">${fN(inv.total1||inv.sub||0)}</td></tr>
+  <tr><td style="color:#666">Additional Total (SAR)</td><td style="text-align:right">${fN(inv.total2||0)}</td></tr>
+  <tr class="gr"><td>Sub Total (SAR)</td><td style="text-align:right">SAR ${fN(inv.grand)}</td></tr>
+  ${paid>0?`<tr><td style="color:#28a745">Amount Paid</td><td style="text-align:right;color:#28a745">(${fN(paid)})</td></tr>
+  <tr><td style="font-weight:bold">Balance Due (SAR)</td><td style="text-align:right;font-weight:bold">SAR ${fN(bal)}</td></tr>`:''}
+</table>
+${(inv.payments||[]).length>0?`<h3 style="font-size:12px;font-weight:bold;color:#185FA5;margin:16px 0 8px">Payment History</h3>
+<table class="ptbl"><thead><tr><th>Date</th><th style="text-align:right">Amount (SAR)</th><th>Note</th></tr></thead>
+<tbody>${inv.payments.map(p=>`<tr><td>${fD(p.date)}</td><td style="text-align:right">${fN(p.amount)}</td><td>${p.note||''}</td></tr>`).join('')}</tbody></table>`:''}
+${inv.notes?`<div class="nb"><strong>Notes / Payment Terms:</strong><br>${inv.notes}</div>`:''}
+${s.bankName||s.iban?`<div class="bb"><strong>Payment Details:</strong><br>${s.bankName?'Bank: '+s.bankName+'<br>':''}${s.iban?'IBAN: '+s.iban:''}</div>`:''}
+<div class="ft">Thank you for your business! &nbsp;|&nbsp; ${s.companyName||'Your Company'}</div>
+</body></html>`;
+  const w=window.open('','_blank','width=820,height=1050');
+  if(!w){alert('Please allow pop-ups to print invoices.');return;}
+  w.document.write(html);w.document.close();
+  setTimeout(()=>w.print(),700);
+}
+
+// ── EXPORT / IMPORT ──
+function openImportExport(){
+  document.getElementById('ie-modal').classList.add('on');
+}
+function closeModal(){
+  document.getElementById('ie-modal').classList.remove('on');
+}
+
+function exportJSON(){
+  const data={D,S,ITEMS,STOCK,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='mbrillo_backup_'+tod()+'.json';
+  a.click();
+}
+
+function importJSON(){
+  const file=document.getElementById('import-file').files[0];
+  if(!file){alert('Please select a JSON backup file.');return;}
+  if(!confirm('This will overwrite ALL current data. Are you sure?'))return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.D)D=data.D;
+      if(data.S)S=data.S;
+      if(data.ITEMS)ITEMS=data.ITEMS;
+      if(data.STOCK)STOCK=data.STOCK;
+      saveD();saveS();saveItems();saveStock();
+      closeModal();
+      alert('✓ Data restored successfully!');
+      renderDash();
+    }catch(err){alert('Error reading backup file: '+err.message);}
+  };
+  reader.readAsText(file);
+}
+
+function exportAllExcel(){
+  if(!D.invoices.length){alert('No invoices to export.');return;}
+  const rows=[...D.invoices].sort((a,b)=>b.date.localeCompare(a.date)).map(inv=>({
+    'Invoice #':inv.number,'Customer':inv.customer,'Date':inv.date,'Due Date':inv.due||'',
+    'Total (SAR)':+(inv.total1||inv.sub||0).toFixed(2),
+    'Additional Total (SAR)':+(inv.total2||0).toFixed(2),
+    'Sub Total (SAR)':+inv.grand.toFixed(2),'Paid (SAR)':+getPaid(inv).toFixed(2),
+    'Balance (SAR)':+getBal(inv).toFixed(2),'Status':getStatus(inv)
+  }));
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:12},{wch:25},{wch:12},{wch:12},{wch:14},{wch:18},{wch:15},{wch:12},{wch:12},{wch:10}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'All Invoices');
+  XLSX.writeFile(wb,'All_Invoices.xlsx');
+}
+
+function exportInvExcel(id){
+  const inv=D.invoices.find(i=>i.id===id); if(!inv)return;
+  const wb=XLSX.utils.book_new();
+  const rows=[];
+  rows.push({'#':'','Description':'--- Section 1 ---','Qty':'','Unit Price (SAR)':'','Disc%':'','Total (SAR)':''});
+  (inv.items||[]).forEach((it,i)=>{
+    const base=it.qty*it.price*(1-it.disc/100);
+    rows.push({'#':i+1,'Description':it.desc,'Qty':it.qty,'Unit Price (SAR)':it.price,'Disc%':it.disc,'Total (SAR)':+base.toFixed(2)});
+  });
+  rows.push({'#':'','Description':'Total','Qty':'','Unit Price (SAR)':'','Disc%':'','Total (SAR)':+(inv.total1||inv.sub||0).toFixed(2)});
+  rows.push({});
+  rows.push({'#':'','Description':'--- Section 2 ---','Qty':'','Unit Price (SAR)':'','Disc%':'','Total (SAR)':''});
+  (inv.items2||[]).forEach((it,i)=>{
+    const base=it.qty*it.price*(1-it.disc/100);
+    rows.push({'#':i+1,'Description':it.desc,'Qty':it.qty,'Unit Price (SAR)':it.price,'Disc%':it.disc,'Total (SAR)':+base.toFixed(2)});
+  });
+  rows.push({'#':'','Description':'Additional Total','Qty':'','Unit Price (SAR)':'','Disc%':'','Total (SAR)':+(inv.total2||0).toFixed(2)});
+  rows.push({});
+  rows.push({'#':'','Description':'Sub Total (SAR)','Qty':'','Unit Price (SAR)':'','Disc%':'','Total (SAR)':+inv.grand.toFixed(2)});
+  if(getPaid(inv)>0){
+    rows.push({'#':'','Description':'Amount Paid','Total (SAR)':+getPaid(inv).toFixed(2)});
+    rows.push({'#':'','Description':'Balance Due (SAR)','Total (SAR)':+getBal(inv).toFixed(2)});
+  }
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:4},{wch:30},{wch:8},{wch:16},{wch:8},{wch:14}];
+  XLSX.utils.book_append_sheet(wb,ws,inv.number);
+  if((inv.payments||[]).length){
+    const pr=inv.payments.map(p=>({'Date':p.date,'Amount (SAR)':p.amount,'Note':p.note||''}));
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pr),'Payments');
+  }
+  XLSX.writeFile(wb,inv.number+'_Invoice.xlsx');
+}
+
+// ── CUSTOMERS ──
+function getCusts(){
+  const map={};
+  D.invoices.forEach(inv=>{
+    if(!map[inv.customer])map[inv.customer]={name:inv.customer,invoices:[]};
+    map[inv.customer].invoices.push(inv);
+  });
+  return Object.values(map);
+}
+
+function renderCusts(){
+  document.getElementById('cust-lv').style.display='block';
+  document.getElementById('cust-dv').style.display='none';
+  const custs=getCusts();
+  document.getElementById('cust-grid').innerHTML=custs.length
+    ?custs.map(c=>{
+        const total=c.invoices.reduce((s,i)=>s+i.grand,0);
+        const paid=c.invoices.reduce((s,i)=>s+getPaid(i),0);
+        return`<div class="cc" onclick="viewCust('${c.name.replace(/'/g,"\\'")}')">
+          <div class="avatar" style="margin-bottom:8px">${inits(c.name)}</div>
+          <div style="font-weight:500;font-size:13px;margin-bottom:3px">${c.name}</div>
+          <div style="font-size:12px;color:var(--gray-500)">${c.invoices.length} invoice${c.invoices.length!==1?'s':''}</div>
+          <div style="font-size:12px;color:var(--gray-500)">Total: SAR ${fN(total)}</div>
+          <div style="font-size:12px;color:var(--green)">Paid: SAR ${fN(paid)}</div>
+          <div style="font-size:12px;color:var(--amber)">Balance: SAR ${fN(Math.max(0,total-paid))}</div>
+        </div>`;
+      }).join('')
+    :'<div style="grid-column:1/-1" class="empty">No customers yet. Create an invoice to add a customer.</div>';
+}
+
+function viewCust(name){
+  document.getElementById('cust-lv').style.display='none';
+  document.getElementById('cust-dv').style.display='block';
+  const c=getCusts().find(x=>x.name===name); if(!c)return;
+  document.getElementById('ca-av').textContent=inits(name);
+  document.getElementById('ca-name').textContent=name;
+  document.getElementById('ca-meta').textContent=`${c.invoices.length} invoices`;
+  const total=c.invoices.reduce((s,i)=>s+i.grand,0);
+  const paid=c.invoices.reduce((s,i)=>s+getPaid(i),0);
+  const bal=Math.max(0,total-paid);
+  document.getElementById('ca-mets').innerHTML=`
+    <div class="metric"><div class="mlabel">Total Invoiced (SAR)</div><div class="mval">${fN(total)}</div></div>
+    <div class="metric"><div class="mlabel">Paid (SAR)</div><div class="mval" style="color:var(--green)">${fN(paid)}</div></div>
+    <div class="metric"><div class="mlabel">Balance (SAR)</div><div class="mval" style="color:var(--amber)">${fN(bal)}</div></div>`;
+  document.getElementById('ca-tbl').innerHTML=[...c.invoices].sort((a,b)=>b.date.localeCompare(a.date)).map(inv=>`<tr>
+    <td><button class="lbtn" onclick="viewInv('${inv.id}','customers')">${inv.number}</button></td>
+    <td>${fD(inv.date)}</td><td style="text-align:right">${fN(inv.grand)}</td>
+    <td style="text-align:right">${fN(getPaid(inv))}</td><td style="text-align:right">${fN(getBal(inv))}</td>
+    <td>${badge(getStatus(inv))}</td>
+    <td><button class="btn btn-xs" onclick="viewInv('${inv.id}','customers')">View</button></td></tr>`).join('');
+}
+
+function backCust(){
+  document.getElementById('cust-dv').style.display='none';
+  document.getElementById('cust-lv').style.display='block';
+  renderCusts();
+}
+
+// ── SETTINGS ──
+function loadSForm(){
+  document.getElementById('s-name').value=S.companyName||'';
+  document.getElementById('s-addr').value=S.address||'';
+  document.getElementById('s-phone').value=S.phone||'';
+  document.getElementById('s-bank').value=S.bankName||'';
+  document.getElementById('s-iban').value=S.iban||'';
+  document.getElementById('logo-prev').innerHTML=S.logo?`<img src="${S.logo}" class="logo-prev">`:'';
+  loadFbConfigForm();
+}
+
+function saveSettings(){
+  S.companyName=document.getElementById('s-name').value;
+  S.address=document.getElementById('s-addr').value;
+  S.phone=document.getElementById('s-phone').value;
+  S.bankName=document.getElementById('s-bank').value;
+  S.iban=document.getElementById('s-iban').value;
+  saveS(); alert('✓ Settings saved!');
+}
+
+function handleLogo(input){
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{S.logo=e.target.result;saveS();document.getElementById('logo-prev').innerHTML=`<img src="${S.logo}" class="logo-prev">`;};
+  reader.readAsDataURL(file);
+}
+
+// ── INVOICE FORM ──
+function initForm(){
+  document.getElementById('fn-num').textContent=padN(D.nextNum);
+  document.getElementById('fn-date').textContent=fD(tod());
+  const due=new Date();due.setDate(due.getDate()+30);
+  document.getElementById('fn-due').value=due.toISOString().split('T')[0];
+  updateDL();
+  if(!document.getElementById('fn-items').children.length)addRow();
+  if(!document.getElementById('fn-items2').children.length)addRow2();
+}
+
+function updateDL(){
+  document.getElementById('cust-dl').innerHTML=getCusts().map(c=>`<option value="${c.name}">`).join('');
+}
+
+function onCustIn(){
+  const name=document.getElementById('fn-cust').value;
+  const c=getCusts().find(x=>x.name===name);
+  if(c&&c.invoices.length){
+    const last=c.invoices[c.invoices.length-1];
+    if(last.address&&!document.getElementById('fn-addr').value)document.getElementById('fn-addr').value=last.address;
+  }
+}
+
+function buildRowHTML(bodyId){
+  const cls=bodyId==='fn-items'?'row-total':'row-total2';
+  return`<td class="sn-cell" style="text-align:center;color:var(--gray-400);font-size:11px;font-weight:600"></td>
+    <td><select onchange="updateRowProfit(this);recalc()" style="width:100%"><option value="">-- Select Item --</option>${ITEMS.map(i=>`<option>${i}</option>`).join('')}</select></td>
+    <td><input type="number" value="1" min="0" step="any" oninput="updateRowProfit(this.closest('tr').querySelector('select'));recalc()" style="width:100%"></td>
+    <td><input type="number" min="0" step="any" placeholder="0.00" oninput="updateRowProfit(this.closest('tr').querySelector('select'));recalc()" style="width:100%"></td>
+    <td><input type="number" value="0" min="0" max="100" step="any" oninput="updateRowProfit(this.closest('tr').querySelector('select'));recalc()" style="width:100%"></td>
+    <td class="rt ${cls}" style="white-space:nowrap">0.00</td>
+    <td class="row-profit" style="font-size:11px;color:var(--gray-400)">—</td>
+    <td style="text-align:center"><label class="toggle"><input type="checkbox" checked onchange="recalc()"><span class="toggle-slider"></span></label></td>
+    <td><button class="btn btn-xs btn-danger" onclick="rmRow(this)">✕</button></td>`;
+}
+
+function addRow(){
+  const tr=document.createElement('tr');
+  tr.innerHTML=buildRowHTML('fn-items');
+  document.getElementById('fn-items').appendChild(tr);
+  renumberRows('fn-items');
+}
+
+function addRow2(){
+  const tr=document.createElement('tr');
+  tr.innerHTML=buildRowHTML('fn-items2');
+  document.getElementById('fn-items2').appendChild(tr);
+  renumberRows('fn-items2');
+}
+
+function rmRow(btn){btn.closest('tr').remove();recalc();renumberRows('fn-items');renumberRows('fn-items2');}
+
+function renumberRows(tbodyId){
+  document.querySelectorAll('#'+tbodyId+' tr').forEach((tr,i)=>{
+    const c=tr.querySelector('.sn-cell');
+    if(c)c.textContent=i+1;
+  });
+}
+
+function updateRowProfit(sel){
+  if(!sel)return;
+  const tr=sel.closest('tr');
+  const ins=tr.querySelectorAll('input[type="number"]');
+  const qty=parseFloat(ins[0].value)||0;
+  const price=parseFloat(ins[1].value)||0;
+  const disc=parseFloat(ins[2].value)||0;
+  const profitCell=tr.querySelector('.row-profit');
+  if(!profitCell)return;
+  const itemName=sel.value;
+  if(!itemName||!price||!qty){profitCell.textContent='—';profitCell.style.color='var(--gray-400)';return;}
+  const p=calcProfit(itemName,price,qty,disc);
+  if(p===null){profitCell.innerHTML='<span style="color:var(--gray-400);font-size:10px">no cost</span>';return;}
+  profitCell.textContent=fN(p);
+  profitCell.style.color=p>=0?'var(--green)':'var(--red)';
+}
+
+function recalc(){
+  renumberRows('fn-items');renumberRows('fn-items2');
+  let total1=0,total2=0,totalProfit=0,hasProfit=false;
+  document.querySelectorAll('#fn-items tr').forEach(tr=>{
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0].value)||0,price=parseFloat(ins[1].value)||0;
+    const disc=(parseFloat(ins[2].value)||0)/100;
+    const base=qty*price*(1-disc);
+    total1+=base;
+    tr.querySelector('.row-total').textContent=fN(base);
+    const sel=tr.querySelector('select');
+    const showToggle=tr.querySelector('input[type="checkbox"]');
+    if(sel&&sel.value&&showToggle&&showToggle.checked){
+      const p=calcProfit(sel.value,price,qty,parseFloat(ins[2].value)||0);
+      if(p!==null){totalProfit+=p;hasProfit=true;}
+    }
+  });
+  document.querySelectorAll('#fn-items2 tr').forEach(tr=>{
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0].value)||0,price=parseFloat(ins[1].value)||0;
+    const disc=(parseFloat(ins[2].value)||0)/100;
+    const base=qty*price*(1-disc);
+    total2+=base;
+    tr.querySelector('.row-total2').textContent=fN(base);
+    const sel=tr.querySelector('select');
+    const showToggle=tr.querySelector('input[type="checkbox"]');
+    if(sel&&sel.value&&showToggle&&showToggle.checked){
+      const p=calcProfit(sel.value,price,qty,parseFloat(ins[2].value)||0);
+      if(p!==null){totalProfit+=p;hasProfit=true;}
+    }
+  });
+  document.getElementById('t1').textContent=fN(total1);
+  document.getElementById('t2').textContent=fN(total2);
+  document.getElementById('tg').textContent=fN(total1+total2);
+  const ps=document.getElementById('profit-summary');
+  if(hasProfit){
+    ps.style.display='block';
+    document.getElementById('profit-total').textContent=fN(totalProfit);
+    ps.style.background=totalProfit>=0?'var(--green-light)':'var(--red-light)';
+    ps.style.borderColor=totalProfit>=0?'var(--green-mid)':'var(--red-mid)';
+    ps.querySelector('span').style.color=totalProfit>=0?'var(--green)':'var(--red)';
+  } else {
+    ps.style.display='none';
+  }
+}
+
+function saveInvoice(){
+  const customer=document.getElementById('fn-cust').value.trim();
+  if(!customer){alert('Please enter customer name.');return;}
+  let total1=0,total2=0;
+  const items=[],items2=[];
+  document.querySelectorAll('#fn-items tr').forEach(tr=>{
+    const sel=tr.querySelector('select').value;
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0].value)||0,price=parseFloat(ins[1].value)||0;
+    const disc=parseFloat(ins[2].value)||0;
+    if(qty&&price){const base=qty*price*(1-disc/100);total1+=base;items.push({desc:sel,qty,price,disc,costSnapshot:getAvgCost(sel)});}
+  });
+  document.querySelectorAll('#fn-items2 tr').forEach(tr=>{
+    const sel=tr.querySelector('select').value;
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0].value)||0,price=parseFloat(ins[1].value)||0;
+    const disc=parseFloat(ins[2].value)||0;
+    if(qty&&price){const base=qty*price*(1-disc/100);total2+=base;items2.push({desc:sel,qty,price,disc,costSnapshot:getAvgCost(sel)});}
+  });
+  if(!items.length&&!items2.length){alert('Please add at least one item with qty and price.');return;}
+  const grand=total1+total2;
+  const inv={id:'inv-'+Date.now(),number:padN(D.nextNum),date:tod(),due:document.getElementById('fn-due').value,
+    customer,address:document.getElementById('fn-addr').value,
+    notes:document.getElementById('fn-notes').value,items,items2,total1,total2,grand,payments:[]};
+  D.invoices.push(inv);D.nextNum++;saveD();
+  // Deduct stock
+  deductStock([...items,...items2]);
+  clearForm();
+  alert(`✓ Invoice ${inv.number} saved!`);
+  viewInv(inv.id,'invoices');
+}
+
+function clearForm(){
+  ['fn-cust','fn-addr','fn-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fn-items').innerHTML='';
+  document.getElementById('fn-items2').innerHTML='';
+  addRow();addRow2();recalc();
+}
+
+// ── ITEMS ──
+function renderItems(){
+  document.getElementById('item-count').textContent=ITEMS.length;
+  document.getElementById('items-table').innerHTML=ITEMS.length
+    ?ITEMS.map((item,i)=>`<tr>
+        <td style="color:var(--gray-500);width:40px">${i+1}</td>
+        <td id="item-cell-${i}"><span id="item-text-${i}">${item}</span></td>
+        <td>
+          <div class="flex">
+            <button class="btn btn-xs" onclick="startEditItem(${i})">Edit</button>
+            <button class="btn btn-xs btn-danger" onclick="deleteItem(${i})">✕ Remove</button>
+          </div>
+        </td>
+      </tr>`).join('')
+    :'<tr><td colspan="3" class="empty">No items yet.</td></tr>';
+}
+
+function addItem(){
+  const input=document.getElementById('new-item-input');
+  const val=input.value.trim();
+  if(!val){alert('Please enter an item name.');return;}
+  if(ITEMS.includes(val)){alert('This item already exists.');return;}
+  ITEMS.push(val);saveItems();input.value='';renderItems();updateDL();
+}
+
+function deleteItem(i){
+  if(!confirm(`Remove "${ITEMS[i]}" from the item list?`))return;
+  ITEMS.splice(i,1);saveItems();renderItems();updateDL();
+}
+
+function startEditItem(i){
+  const cell=document.getElementById('item-cell-'+i);
+  const current=ITEMS[i];
+  cell.innerHTML=`<div class="flex">
+    <input id="edit-item-${i}" value="${current.replace(/"/g,'&quot;')}" style="flex:1;padding:4px 6px;font-size:12px">
+    <button class="btn btn-xs btn-primary" onclick="saveEditItem(${i})">Save</button>
+    <button class="btn btn-xs" onclick="renderItems()">Cancel</button>
+  </div>`;
+  document.getElementById('edit-item-'+i).focus();
+  document.getElementById('edit-item-'+i).onkeydown=e=>{if(e.key==='Enter')saveEditItem(i);if(e.key==='Escape')renderItems();};
+}
+
+function saveEditItem(i){
+  const val=(document.getElementById('edit-item-'+i)||{}).value;
+  if(!val||!val.trim()){alert('Item name cannot be empty.');return;}
+  const trimmed=val.trim();
+  if(ITEMS.includes(trimmed)&&ITEMS[i]!==trimmed){alert('This item already exists.');return;}
+  ITEMS[i]=trimmed;saveItems();renderItems();updateDL();
+}
+
+// ── AUTO BACKUP ──
+const BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const BACKUP_KEY = 'inv-last-backup-date';
+
+function doAutoBackup(silent=true){
+  try{
+    const data = {D, S, ITEMS, STOCK, QUOTATIONS, exportedAt: new Date().toISOString(), backupType:'auto'};
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const dateStr = new Date().toISOString().split('T')[0];
+    a.download = 'mbrillo_backup_' + dateStr + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+    localStorage.setItem(BACKUP_KEY, new Date().toISOString().split('T')[0]);
+    if(!silent){
+      showBackupToast('✅ Backup saved to Downloads folder!', 'green');
+    }
+  } catch(e){
+    console.error('Auto backup failed:', e);
+    if(!silent) showBackupToast('⚠ Backup failed: '+e.message, 'red');
+  }
+}
+
+function checkAutoBackup(){
+  const lastBackup = localStorage.getItem(BACKUP_KEY);
+  const today = new Date().toISOString().split('T')[0];
+  if(lastBackup !== today){
+    // Wait 3 seconds after load so data is fully ready
+    setTimeout(()=>{
+      doAutoBackup(false);
+    }, 3000);
+  }
+}
+
+function showBackupToast(msg, color){
+  const existing = document.getElementById('backup-toast');
+  if(existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'backup-toast';
+  toast.innerHTML = `<span style="font-size:14px">${msg}</span>
+    <span style="font-size:11px;opacity:.7;margin-left:8px">Auto backup</span>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:inherit;cursor:pointer;font-size:16px;margin-left:12px;opacity:.7">✕</button>`;
+  toast.style.cssText = `
+    position:fixed;bottom:24px;right:24px;z-index:9998;
+    background:${color==='green'?'var(--green)':'var(--red)'};
+    color:#fff;padding:12px 18px;border-radius:10px;
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+    display:flex;align-items:center;gap:4px;
+    animation:slideUp .3s ease;max-width:360px;`;
+  // Add animation
+  const style = document.createElement('style');
+  style.textContent = '@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}';
+  document.head.appendChild(style);
+  document.body.appendChild(toast);
+  setTimeout(()=>{ if(toast.parentElement) toast.style.opacity='0'; toast.style.transition='opacity .4s'; setTimeout(()=>toast.remove(),400); }, 6000);
+  updateBackupStatusLabel();
+}
+
+function updateBackupStatusLabel(){
+  const el = document.getElementById('backup-status');
+  if(!el) return;
+  const last = localStorage.getItem('inv-last-backup-date');
+  const today = new Date().toISOString().split('T')[0];
+  if(!last){
+    el.textContent = '💾 No backup yet';
+    el.style.color = 'var(--amber)';
+  } else if(last === today){
+    el.textContent = '✓ Backed up today';
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = '⚠ Last backup: ' + last;
+    el.style.color = 'var(--amber)';
+  }
+}
+
+// ── INIT ──
+function init(){
+  renderDash();initForm();
+  document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+  // Close modal on overlay click
+  document.getElementById('ie-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+  // Start auto backup check
+  checkAutoBackup();
+  // Schedule daily check every hour (in case app stays open overnight)
+  setInterval(checkAutoBackup, 60 * 60 * 1000);
+  // Update backup status label
+  updateBackupStatusLabel();
+}
+// ── QUOTATIONS ──
+let QUOTATIONS=[];
+let currentQtId=null;
+
+const saveQuots=()=>{
+  try{localStorage.setItem('inv-quotations-v1',JSON.stringify(QUOTATIONS));}catch(e){}
+  if(DOC_REF){
+    clearTimeout(_saveTimer);
+    _saveTimer=setTimeout(()=>{DOC_REF.set({D,S,ITEMS,STOCK,QUOTATIONS}).then(()=>setSyncStatus('synced')).catch(()=>setSyncStatus('error'));},600);
+  }
+};
+
+function loadQuotations(){
+  try{const r=localStorage.getItem('inv-quotations-v1');if(r)QUOTATIONS=JSON.parse(r);}catch(e){}
+  if(!QUOTATIONS)QUOTATIONS=[];
+}
+
+const padQ=n=>'QT-'+String(n).padStart(4,'0');
+
+function showNewQuotation(){
+  currentQtId=null;
+  document.getElementById('qt-lv').style.display='none';
+  document.getElementById('qt-dv').style.display='none';
+  document.getElementById('qt-form').style.display='block';
+  // reset form
+  const nextQ=QUOTATIONS.length?Math.max(...QUOTATIONS.map(q=>parseInt(q.number.replace('QT-',''))||0))+1:1;
+  document.getElementById('qt-num').textContent=padQ(nextQ);
+  document.getElementById('qt-date-lbl').textContent=fD(tod());
+  ['qt-cust','qt-addr','qt-subject','qt-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const valid=new Date();valid.setDate(valid.getDate()+30);
+  document.getElementById('qt-valid').value=valid.toISOString().split('T')[0];
+  document.getElementById('qt-items').innerHTML='';
+  addQtRow();
+  calcQtTotal();
+}
+
+function hideQuotationForm(){
+  document.getElementById('qt-form').style.display='none';
+  document.getElementById('qt-dv').style.display='none';
+  document.getElementById('qt-lv').style.display='block';
+  renderQuotations();
+}
+
+function backToQuotations(){hideQuotationForm();}
+
+function addQtRow(){
+  const tr=document.createElement('tr');
+  const tbody=document.getElementById('qt-items');
+  tr.innerHTML=`<td class="qt-sn" style="text-align:center;color:var(--gray-400);font-size:11px;font-weight:600"></td>
+    <td><select onchange="calcQtTotal()" style="width:100%"><option value="">-- Select Item --</option>${ITEMS.map(i=>`<option>${i}</option>`).join('')}</select></td>
+    <td><input type="number" value="1" min="0" step="any" oninput="calcQtTotal()" style="width:100%"></td>
+    <td><input type="number" min="0" step="any" placeholder="0.00" oninput="calcQtTotal()" style="width:100%"></td>
+    <td><input type="number" value="0" min="0" max="100" step="any" oninput="calcQtTotal()" style="width:100%"></td>
+    <td class="rt qt-row-total" style="white-space:nowrap">0.00</td>
+    <td><button class="btn btn-xs btn-danger" onclick="this.closest('tr').remove();renumberQtRows();calcQtTotal()">✕</button></td>`;
+  tbody.appendChild(tr);
+  renumberQtRows();
+}
+
+function renumberQtRows(){
+  document.querySelectorAll('#qt-items tr').forEach((tr,i)=>{
+    const c=tr.querySelector('.qt-sn');if(c)c.textContent=i+1;
+  });
+}
+
+function calcQtTotal(){
+  let total=0;
+  document.querySelectorAll('#qt-items tr').forEach(tr=>{
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0]?.value)||0,price=parseFloat(ins[1]?.value)||0,disc=(parseFloat(ins[2]?.value)||0)/100;
+    const base=qty*price*(1-disc);total+=base;
+    const rt=tr.querySelector('.qt-row-total');if(rt)rt.textContent=fN(base);
+  });
+  document.getElementById('qt-total').textContent=fN(total);
+}
+
+function onQtCustIn(){
+  const name=document.getElementById('qt-cust').value;
+  const c=getCusts().find(x=>x.name===name);
+  if(c&&c.invoices.length){
+    const last=c.invoices[c.invoices.length-1];
+    if(last.address&&!document.getElementById('qt-addr').value)document.getElementById('qt-addr').value=last.address;
+  }
+}
+
+function saveQuotation(){
+  const customer=document.getElementById('qt-cust').value.trim();
+  if(!customer){alert('Please enter customer name.');return;}
+  const items=[];let total=0;
+  document.querySelectorAll('#qt-items tr').forEach(tr=>{
+    const sel=tr.querySelector('select').value;
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0]?.value)||0,price=parseFloat(ins[1]?.value)||0,disc=parseFloat(ins[2]?.value)||0;
+    if(qty&&price){const base=qty*price*(1-disc/100);total+=base;items.push({desc:sel,qty,price,disc});}
+  });
+  if(!items.length){alert('Please add at least one item.');return;}
+  const numStr=document.getElementById('qt-num').textContent;
+  if(currentQtId){
+    const qt=QUOTATIONS.find(q=>q.id===currentQtId);
+    if(qt){qt.customer=customer;qt.address=document.getElementById('qt-addr').value;qt.subject=document.getElementById('qt-subject').value;qt.valid=document.getElementById('qt-valid').value;qt.notes=document.getElementById('qt-notes').value;qt.items=items;qt.total=total;}
+  } else {
+    const qt={id:'qt-'+Date.now(),number:numStr,date:tod(),customer,address:document.getElementById('qt-addr').value,subject:document.getElementById('qt-subject').value,valid:document.getElementById('qt-valid').value,notes:document.getElementById('qt-notes').value,items,total,status:'open'};
+    QUOTATIONS.push(qt);
+  }
+  saveQuots();
+  alert('✓ Quotation saved!');
+  hideQuotationForm();
+}
+
+function renderQuotations(){
+  document.getElementById('qt-table').innerHTML=QUOTATIONS.length
+    ?[...QUOTATIONS].reverse().map(qt=>{
+        const expired=qt.valid&&qt.valid<tod()&&qt.status!=='converted';
+        const stBadge=qt.status==='converted'?`<span class="bdg bdg-paid">Converted</span>`:expired?`<span class="bdg bdg-overdue">Expired</span>`:`<span class="bdg bdg-pending">Open</span>`;
+        return`<tr>
+          <td><button class="lbtn" onclick="viewQuotation('${qt.id}')">${qt.number}</button></td>
+          <td>${qt.customer}</td><td>${fD(qt.date)}</td><td>${fD(qt.valid)}</td>
+          <td style="text-align:right">${fN(qt.total)}</td><td>${stBadge}</td>
+          <td style="display:flex;gap:4px">
+            <button class="btn btn-xs" onclick="viewQuotation('${qt.id}')">View</button>
+            <button class="btn btn-xs btn-success" onclick="convertQuotationToInvoice('${qt.id}')">→ Invoice</button>
+            <button class="btn btn-xs btn-danger" onclick="deleteQuotation('${qt.id}')">Del</button>
+          </td></tr>`;
+      }).join('')
+    :'<tr><td colspan="7" class="empty">No quotations yet. Click "+ New Quotation" to create one.</td></tr>';
+}
+
+function viewQuotation(id){
+  currentQtId=id;
+  const qt=QUOTATIONS.find(q=>q.id===id);if(!qt)return;
+  document.getElementById('qt-lv').style.display='none';
+  document.getElementById('qt-form').style.display='none';
+  document.getElementById('qt-dv').style.display='block';
+  document.getElementById('qtd-num').textContent=qt.number;
+  document.getElementById('qtd-dates').innerHTML=`Date: ${fD(qt.date)}<br>Valid Until: ${fD(qt.valid)}${qt.subject?`<br>Ref: ${qt.subject}`:''}`;
+  const expired=qt.valid&&qt.valid<tod()&&qt.status!=='converted';
+  document.getElementById('qtd-status').innerHTML=qt.status==='converted'?`<span class="bdg bdg-paid">Converted to Invoice</span>`:expired?`<span class="bdg bdg-overdue">Expired</span>`:`<span class="bdg bdg-pending">Open</span>`;
+  document.getElementById('qtd-company').innerHTML=`${S.logo?`<img src="${S.logo}" style="max-height:40px;max-width:120px;display:block;margin-left:auto;margin-bottom:6px">`:''}
+    <div style="font-weight:500;color:var(--gray-800)">${S.companyName||'Your Company'}</div>
+    ${S.address?`<div>${S.address}</div>`:''}${S.phone?`<div>${S.phone}</div>`:''}`;
+  document.getElementById('qtd-cust').innerHTML=`<div style="font-weight:500">${qt.customer}</div>${qt.address?`<div style="color:var(--gray-500)">${qt.address}</div>`:''}`;
+  document.getElementById('qtd-gttl').innerHTML=`<div style="font-size:11px;color:var(--gray-500)">Quotation Total</div><div style="font-size:20px;font-weight:500">SAR ${fN(qt.total)}</div>`;
+  document.getElementById('qtd-items').innerHTML=(qt.items||[]).map((it,i)=>{
+    const base=it.qty*it.price*(1-it.disc/100);
+    return`<tr><td>${i+1}</td><td>${it.desc||'-'}</td><td style="text-align:center">${it.qty}</td>
+      <td style="text-align:right">${fN(it.price)}</td><td style="text-align:center">${it.disc}%</td>
+      <td style="text-align:right">${fN(base)}</td></tr>`;
+  }).join('');
+  document.getElementById('qtd-tots').innerHTML=`<div class="tot-wrap"><table><tr class="tgrand"><td>Total (SAR)</td><td class="rt">SAR ${fN(qt.total)}</td></tr></table></div>`;
+  const nc=document.getElementById('qtd-notes-c');
+  if(qt.notes){nc.style.display='block';document.getElementById('qtd-notes').textContent=qt.notes;}
+  else nc.style.display='none';
+}
+
+function deleteQuotation(id){
+  if(!confirm('Delete this quotation?'))return;
+  QUOTATIONS=QUOTATIONS.filter(q=>q.id!==id);
+  saveQuots();
+  hideQuotationForm();
+}
+
+function convertQuotationToInvoice(id){
+  const qt=QUOTATIONS.find(q=>q.id===id);if(!qt)return;
+  if(!confirm(`Convert quotation ${qt.number} to an invoice? This will create a new invoice for ${qt.customer}.`))return;
+  // Build invoice object
+  const items=qt.items.map(it=>({...it,costSnapshot:getAvgCost(it.desc)}));
+  const total=items.reduce((s,it)=>s+it.qty*it.price*(1-(it.disc||0)/100),0);
+  const inv={id:'inv-'+Date.now(),number:padN(D.nextNum),date:tod(),due:'',customer:qt.customer,address:qt.address||'',notes:qt.notes||'Converted from Quotation '+qt.number,items,items2:[],total1:total,total2:0,grand:total,payments:[]};
+  D.invoices.push(inv);D.nextNum++;
+  // Mark quotation as converted
+  qt.status='converted';qt.invoiceId=inv.id;qt.invoiceNumber=inv.number;
+  deductStock(items);
+  saveD();saveQuots();
+  alert(`✓ Invoice ${inv.number} created from Quotation ${qt.number}!`);
+  viewInv(inv.id,'invoices');
+}
+
+function printQuotation(){
+  const customer=document.getElementById('qt-cust').value.trim();
+  if(!customer){alert('Please save the quotation first.');return;}
+  // Build temp object from form
+  const items=[];let total=0;
+  document.querySelectorAll('#qt-items tr').forEach(tr=>{
+    const sel=tr.querySelector('select').value;
+    const ins=tr.querySelectorAll('input[type="number"]');
+    const qty=parseFloat(ins[0]?.value)||0,price=parseFloat(ins[1]?.value)||0,disc=parseFloat(ins[2]?.value)||0;
+    if(qty&&price){const base=qty*price*(1-disc/100);total+=base;items.push({desc:sel,qty,price,disc});}
+  });
+  const qt={number:document.getElementById('qt-num').textContent,date:tod(),customer,address:document.getElementById('qt-addr').value,subject:document.getElementById('qt-subject').value,valid:document.getElementById('qt-valid').value,notes:document.getElementById('qt-notes').value,items,total};
+  printQuotationObj(qt);
+}
+
+function printQuotationById(id){
+  const qt=QUOTATIONS.find(q=>q.id===id);if(!qt)return;
+  printQuotationObj(qt);
+}
+
+function printQuotationObj(qt){
+  const s=S;
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${qt.number}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:12px;color:#333;padding:28px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:2px solid #185FA5;margin-bottom:20px}
+.cn{font-size:18px;font-weight:bold;color:#185FA5;margin-bottom:4px}.cm{font-size:11px;color:#666;line-height:1.7}
+.it{font-size:26px;font-weight:bold;color:#185FA5;text-align:right}.im{font-size:12px;color:#555;text-align:right;margin-top:4px;line-height:1.8}
+.bdg{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;background:#cce5ff;color:#0c447c;font-weight:bold}
+.bs{display:flex;justify-content:space-between;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px}
+.itbl th{background:#185FA5;color:#fff;padding:7px 8px;text-align:left;font-size:11px}
+.itbl td{padding:6px 8px;border-bottom:1px solid #eee}.itbl tr:last-child td{border-bottom:none}
+.tt{width:260px;margin-left:auto}.tt td{padding:4px 6px}
+.gr{font-weight:bold;font-size:13px;border-top:2px solid #185FA5}
+.nb{background:#f8f9fa;border-radius:4px;padding:12px;margin-top:14px;font-size:12px}
+.bb{background:#e8f4fd;border-radius:4px;padding:12px;margin-top:8px;font-size:12px}
+.ft{margin-top:24px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px}
+.logo{max-height:55px;max-width:140px;margin-bottom:6px;display:block}
+@media print{body{padding:16px}}</style></head><body>
+<div class="hdr">
+  <div>${s.logo?`<img class="logo" src="${s.logo}">`:''}
+    <div class="cn">${s.companyName||'Your Company'}</div>
+    <div class="cm">${s.address||''}<br>${s.phone?'Tel: '+s.phone+'<br>':''}</div>
+  </div>
+  <div><div class="it">QUOTATION</div>
+    <div class="im"><strong>${qt.number}</strong><br>Date: ${fD(qt.date)}<br>Valid Until: ${fD(qt.valid)}<br><span class="bdg">QUOTATION</span></div>
+  </div>
+</div>
+<div class="bs">
+  <div><div style="font-size:10px;font-weight:bold;color:#999;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Quote To</div>
+    <strong>${qt.customer}</strong><br>${qt.address?qt.address+'<br>':''}
+    ${qt.subject?`<div style="margin-top:6px;font-size:11px;color:#666"><em>Ref: ${qt.subject}</em></div>`:''}
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:22px;font-weight:bold;color:#185FA5">SAR ${fN(qt.total)}</div>
+    <div style="font-size:11px;color:#666">Quotation Total</div>
+  </div>
+</div>
+<table class="itbl">
+  <thead><tr><th>#</th><th>Description</th><th>Qty</th><th style="text-align:right">Unit Price (SAR)</th><th>Disc%</th><th style="text-align:right">Total (SAR)</th></tr></thead>
+  <tbody>${(qt.items||[]).map((it,i)=>{const base=it.qty*it.price*(1-(it.disc||0)/100);
+    return`<tr><td>${i+1}</td><td>${it.desc||'-'}</td><td style="text-align:center">${it.qty}</td>
+    <td style="text-align:right">${fN(it.price)}</td><td style="text-align:center">${it.disc||0}%</td>
+    <td style="text-align:right">${fN(base)}</td></tr>`;}).join('')}
+  </tbody>
+</table>
+<table class="tt"><tr class="gr"><td>Total (SAR)</td><td style="text-align:right">SAR ${fN(qt.total)}</td></tr></table>
+${qt.notes?`<div class="nb"><strong>Notes / Terms:</strong><br>${qt.notes}</div>`:''}
+${s.bankName||s.iban?`<div class="bb"><strong>Payment Details:</strong><br>${s.bankName?'Bank: '+s.bankName+'<br>':''}${s.iban?'IBAN: '+s.iban:''}</div>`:''}
+<div class="ft">This is a quotation only, not an invoice. &nbsp;|&nbsp; ${s.companyName||'Your Company'}</div>
+</body></html>`;
+  const w=window.open('','_blank','width=820,height=1050');
+  if(!w){alert('Please allow pop-ups to print.');return;}
+  w.document.write(html);w.document.close();
+  setTimeout(()=>w.print(),700);
+}
+
+// ── CUSTOMER STATEMENT ──
+function initCustStatement(){
+  const sel=document.getElementById('cs-cust');
+  const custs=getCusts().sort((a,b)=>a.name.localeCompare(b.name));
+  sel.innerHTML='<option value="">-- Select Customer --</option>'+custs.map(c=>`<option>${c.name}</option>`).join('');
+  document.getElementById('cs-content').style.display='none';
+}
+
+function renderCustStatement(){
+  const name=document.getElementById('cs-cust').value;
+  if(!name){document.getElementById('cs-content').style.display='none';return;}
+  const from=document.getElementById('cs-from').value;
+  const to=document.getElementById('cs-to').value;
+  let invs=D.invoices.filter(i=>i.customer===name);
+  if(from)invs=invs.filter(i=>i.date>=from);
+  if(to)invs=invs.filter(i=>i.date<=to);
+  invs=[...invs].sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('cs-content').style.display='block';
+  document.getElementById('cs-cust-name').textContent=name;
+  document.getElementById('cs-period').textContent=(from||to)?(from||'Start')+' → '+(to||'Now'):'All Time';
+  const totalAmt=invs.reduce((s,i)=>s+i.grand,0);
+  const totalPaid=invs.reduce((s,i)=>s+getPaid(i),0);
+  const totalBal=invs.reduce((s,i)=>s+getBal(i),0);
+  const totalInvs=invs.length;
+  document.getElementById('cs-mets').innerHTML=`
+    <div class="metric"><div class="mlabel">Invoices</div><div class="mval">${totalInvs}</div></div>
+    <div class="metric"><div class="mlabel">Total Invoiced (SAR)</div><div class="mval">${fN(totalAmt)}</div></div>
+    <div class="metric"><div class="mlabel">Total Paid (SAR)</div><div class="mval" style="color:var(--green)">${fN(totalPaid)}</div></div>
+    <div class="metric"><div class="mlabel">Balance Due (SAR)</div><div class="mval" style="color:var(--amber)">${fN(totalBal)}</div></div>`;
+  const rows=invs.map(inv=>{
+    const pays=(inv.payments||[]).map(p=>`<div style="font-size:11px;color:var(--green)">${fD(p.date)}: SAR ${fN(p.amount)}${p.note?' ('+p.note+')':''}</div>`).join('');
+    return`<tr>
+      <td><button class="lbtn" onclick="viewInv('${inv.id}','cust-statement')">${inv.number}</button></td>
+      <td>${fD(inv.date)}</td>
+      <td style="text-align:right">${fN(inv.grand)}</td>
+      <td style="text-align:right;color:var(--green)">${fN(getPaid(inv))}</td>
+      <td style="text-align:right;color:var(--amber);font-weight:600">${fN(getBal(inv))}</td>
+      <td>${badge(getStatus(inv))}</td>
+      <td style="font-size:11px">${pays||'<span style="color:var(--gray-300)">—</span>'}</td></tr>`;
+  });
+  const totRow=`<tr style="background:var(--gray-50);font-weight:700"><td colspan="2">TOTAL</td><td style="text-align:right">${fN(totalAmt)}</td><td style="text-align:right;color:var(--green)">${fN(totalPaid)}</td><td style="text-align:right;color:var(--amber)">${fN(totalBal)}</td><td></td><td></td></tr>`;
+  document.getElementById('cs-tbl').innerHTML=invs.length
+    ?rows.join('')+totRow
+    :'<tr><td colspan="7" class="empty">No invoices found for this customer in this period.</td></tr>';
+}
+
+function printCustStatement(){
+  const name=document.getElementById('cs-cust').value;
+  if(!name)return;
+  const from=document.getElementById('cs-from').value;
+  const to=document.getElementById('cs-to').value;
+  let invs=D.invoices.filter(i=>i.customer===name);
+  if(from)invs=invs.filter(i=>i.date>=from);
+  if(to)invs=invs.filter(i=>i.date<=to);
+  invs=[...invs].sort((a,b)=>a.date.localeCompare(b.date));
+  const totalAmt=invs.reduce((s,i)=>s+i.grand,0);
+  const totalPaid=invs.reduce((s,i)=>s+getPaid(i),0);
+  const totalBal=invs.reduce((s,i)=>s+getBal(i),0);
+  const s=S;
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Statement - ${name}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:12px;color:#333;padding:28px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:2px solid #185FA5;margin-bottom:18px}
+.cn{font-size:18px;font-weight:bold;color:#185FA5}.cm{font-size:11px;color:#666;line-height:1.7}
+h2{font-size:20px;font-weight:bold;color:#185FA5}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:11px}
+th{background:#185FA5;color:#fff;padding:6px 8px;text-align:left}
+td{padding:5px 8px;border-bottom:1px solid #eee}
+.sum{font-weight:bold;background:#f0f0f0}
+.logo{max-height:50px;max-width:130px;margin-bottom:6px;display:block}
+.mets{display:flex;gap:20px;margin:12px 0;flex-wrap:wrap}
+.met{background:#f8f9fa;border-radius:4px;padding:10px 14px;min-width:130px}
+.mlb{font-size:10px;color:#666;margin-bottom:4px}
+.mvl{font-size:16px;font-weight:bold;color:#185FA5}
+@media print{body{padding:14px}}</style></head><body>
+<div class="hdr">
+  <div>${s.logo?`<img class="logo" src="${s.logo}">`:''}
+    <div class="cn">${s.companyName||'Your Company'}</div>
+    <div class="cm">${s.address||''}${s.phone?'<br>Tel: '+s.phone:''}</div>
+  </div>
+  <div><h2>CUSTOMER STATEMENT</h2>
+    <div style="font-size:12px;color:#555;margin-top:6px;line-height:1.8">
+      Customer: <strong>${name}</strong><br>
+      Period: ${(from||to)?(from||'Start')+' to '+(to||'Now'):'All Time'}<br>
+      Printed: ${fD(tod())}
+    </div>
+  </div>
+</div>
+<div class="mets">
+  <div class="met"><div class="mlb">Total Invoices</div><div class="mvl">${invs.length}</div></div>
+  <div class="met"><div class="mlb">Total Invoiced</div><div class="mvl">SAR ${fN(totalAmt)}</div></div>
+  <div class="met"><div class="mlb">Total Paid</div><div class="mvl" style="color:#16a34a">SAR ${fN(totalPaid)}</div></div>
+  <div class="met"><div class="mlb">Balance Due</div><div class="mvl" style="color:#d97706">SAR ${fN(totalBal)}</div></div>
+</div>
+<table>
+  <thead><tr><th>Invoice #</th><th>Date</th><th>Due Date</th><th style="text-align:right">Amount (SAR)</th><th style="text-align:right">Paid (SAR)</th><th style="text-align:right">Balance (SAR)</th><th>Status</th><th>Payments</th></tr></thead>
+  <tbody>
+    ${invs.map(inv=>{
+      const pays=(inv.payments||[]).map(p=>`${fD(p.date)}: SAR ${fN(p.amount)}${p.note?' ('+p.note+')':''}`).join('; ');
+      return`<tr><td>${inv.number}</td><td>${fD(inv.date)}</td><td>${fD(inv.due)}</td>
+        <td style="text-align:right">${fN(inv.grand)}</td>
+        <td style="text-align:right;color:#16a34a">${fN(getPaid(inv))}</td>
+        <td style="text-align:right;color:#d97706;font-weight:bold">${fN(getBal(inv))}</td>
+        <td>${getStatus(inv).toUpperCase()}</td><td style="font-size:10px">${pays||'—'}</td></tr>`;
+    }).join('')}
+    <tr class="sum"><td colspan="3">TOTAL</td><td style="text-align:right">SAR ${fN(totalAmt)}</td><td style="text-align:right;color:#16a34a">SAR ${fN(totalPaid)}</td><td style="text-align:right;color:#d97706">SAR ${fN(totalBal)}</td><td colspan="2"></td></tr>
+  </tbody>
+</table>
+${s.bankName||s.iban?`<div style="background:#e8f4fd;border-radius:4px;padding:12px;margin-top:14px;font-size:12px"><strong>Payment Details:</strong><br>${s.bankName?'Bank: '+s.bankName+'<br>':''}${s.iban?'IBAN: '+s.iban:''}</div>`:''}
+<div style="margin-top:20px;text-align:center;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:10px">Generated by ${s.companyName||'Billing System'} &nbsp;|&nbsp; ${fD(tod())}</div>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=1100');
+  if(!w){alert('Please allow pop-ups.');return;}
+  w.document.write(html);w.document.close();setTimeout(()=>w.print(),700);
+}
+
+// ── COMPANY STATEMENT ──
+function renderCompanyStatement(){
+  const from=document.getElementById('cs2-from').value;
+  const to=document.getElementById('cs2-to').value;
+  let invs=[...D.invoices];
+  if(from)invs=invs.filter(i=>i.date>=from);
+  if(to)invs=invs.filter(i=>i.date<=to);
+
+  const showSales=document.getElementById('cs2-sales').checked;
+  const showCusts=document.getElementById('cs2-customers').checked;
+  const showPL=document.getElementById('cs2-profit').checked;
+  const showStock=document.getElementById('cs2-stock').checked;
+  const showTop=document.getElementById('cs2-topitems').checked;
+  const showInvList=document.getElementById('cs2-invlist').checked;
+
+  let html='';
+
+  // Sales Summary
+  if(showSales){
+    const total=invs.reduce((s,i)=>s+i.grand,0);
+    const paid=invs.reduce((s,i)=>s+getPaid(i),0);
+    const bal=invs.reduce((s,i)=>s+getBal(i),0);
+    const pendingCount=invs.filter(i=>getStatus(i)==='pending').length;
+    const overdueCount=invs.filter(i=>getStatus(i)==='overdue').length;
+    const paidCount=invs.filter(i=>getStatus(i)==='paid').length;
+    html+=`<div class="card"><div class="card-title">📈 Sales Summary</div>
+      <div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+        <div class="metric"><div class="mlabel">Total Invoiced (SAR)</div><div class="mval">${fN(total)}</div></div>
+        <div class="metric"><div class="mlabel">Collected (SAR)</div><div class="mval" style="color:var(--green)">${fN(paid)}</div></div>
+        <div class="metric"><div class="mlabel">Outstanding (SAR)</div><div class="mval" style="color:var(--amber)">${fN(bal)}</div></div>
+        <div class="metric"><div class="mlabel">Total Invoices</div><div class="mval">${invs.length}</div></div>
+        <div class="metric"><div class="mlabel">Paid Invoices</div><div class="mval" style="color:var(--green)">${paidCount}</div></div>
+        <div class="metric"><div class="mlabel">Overdue Invoices</div><div class="mval" style="color:var(--red)">${overdueCount}</div></div>
+      </div></div>`;
+  }
+
+  // Customer Balances
+  if(showCusts){
+    const custMap={};
+    invs.forEach(inv=>{
+      if(!custMap[inv.customer])custMap[inv.customer]={name:inv.customer,total:0,paid:0,invoices:0};
+      custMap[inv.customer].total+=inv.grand;
+      custMap[inv.customer].paid+=getPaid(inv);
+      custMap[inv.customer].invoices++;
+    });
+    const custs=Object.values(custMap).sort((a,b)=>(b.total-b.paid)-(a.total-a.paid));
+    html+=`<div class="card"><div class="card-title">👥 Customer Balances</div>
+      <table><thead><tr><th>Customer</th><th style="text-align:right">Invoices</th><th style="text-align:right">Total (SAR)</th><th style="text-align:right">Paid (SAR)</th><th style="text-align:right">Balance (SAR)</th></tr></thead>
+      <tbody>${custs.map(c=>`<tr><td>${c.name}</td><td style="text-align:right">${c.invoices}</td><td style="text-align:right">${fN(c.total)}</td><td style="text-align:right;color:var(--green)">${fN(c.paid)}</td><td style="text-align:right;color:var(--amber);font-weight:600">${fN(c.total-c.paid)}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+
+  // Profit & Loss
+  if(showPL){
+    let totalRevenue=0,totalCost=0,hasProfit=false;
+    invs.forEach(inv=>{
+      totalRevenue+=inv.grand;
+      [...(inv.items||[]),...(inv.items2||[])].forEach(it=>{
+        const c=getItemAvgCostAtSave(it);
+        if(c){totalCost+=(it.qty||0)*c;hasProfit=true;}
+      });
+    });
+    const grossProfit=totalRevenue-totalCost;
+    const margin=totalRevenue>0?(grossProfit/totalRevenue*100):0;
+    html+=`<div class="card"><div class="card-title">📊 Profit & Loss</div>
+      <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
+        <div class="metric"><div class="mlabel">Revenue (SAR)</div><div class="mval">${fN(totalRevenue)}</div></div>
+        <div class="metric"><div class="mlabel">Est. Cost (SAR)</div><div class="mval" style="color:var(--red)">${hasProfit?fN(totalCost):'—'}</div></div>
+        <div class="metric"><div class="mlabel">Gross Profit (SAR)</div><div class="mval" style="color:${grossProfit>=0?'var(--green)':'var(--red)'}">${hasProfit?fN(grossProfit):'—'}</div></div>
+        <div class="metric"><div class="mlabel">Margin %</div><div class="mval" style="color:${margin>=0?'var(--green)':'var(--red)'}">${hasProfit?margin.toFixed(1)+'%':'—'}</div></div>
+      </div>
+      ${!hasProfit?'<p style="font-size:12px;color:var(--gray-400);margin-top:8px">ℹ Add stock cost data to see profit calculations.</p>':''}</div>`;
+  }
+
+  // Stock Summary
+  if(showStock){
+    const stockItems=Object.entries(STOCK).filter(([,s])=>s.qty!==0||s.avgCost>0);
+    const totalStockVal=stockItems.reduce((s,[,x])=>s+Math.max(0,(x.qty||0))*(x.avgCost||0),0);
+    html+=`<div class="card"><div class="card-title">🏭 Stock Summary</div>
+      <div class="metrics" style="grid-template-columns:repeat(2,1fr);margin-bottom:12px">
+        <div class="metric"><div class="mlabel">Total Stock Items</div><div class="mval">${stockItems.length}</div></div>
+        <div class="metric"><div class="mlabel">Stock Value (SAR)</div><div class="mval" style="color:var(--purple)">${fN(totalStockVal)}</div></div>
+      </div>
+      <table><thead><tr><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Avg Cost (SAR)</th><th style="text-align:right">Stock Value (SAR)</th></tr></thead>
+      <tbody>${stockItems.length?stockItems.sort((a,b)=>b[1].qty-a[1].qty).map(([item,s])=>`<tr><td>${item}</td><td style="text-align:right;${s.qty<0?'color:var(--red)':''}">${fN(s.qty)}</td><td style="text-align:right">${fN(s.avgCost)}</td><td style="text-align:right">${s.qty>0?fN(s.qty*s.avgCost):'—'}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No stock data.</td></tr>'}</tbody></table></div>`;
+  }
+
+  // Top Items by Profit
+  if(showTop){
+    const itemMap={};
+    invs.forEach(inv=>{
+      [...(inv.items||[]),...(inv.items2||[])].forEach(it=>{
+        const p=calcProfitFromItem(it);
+        if(p!==null){itemMap[it.desc]=(itemMap[it.desc]||{profit:0,qty:0,revenue:0});itemMap[it.desc].profit+=p;itemMap[it.desc].qty+=(it.qty||0);itemMap[it.desc].revenue+=it.qty*it.price*(1-(it.disc||0)/100);}
+      });
+    });
+    const items=Object.entries(itemMap).sort((a,b)=>b[1].profit-a[1].profit);
+    html+=`<div class="card"><div class="card-title">🏆 Top Items by Profit</div>
+      <table><thead><tr><th>#</th><th>Item</th><th style="text-align:right">Qty Sold</th><th style="text-align:right">Revenue (SAR)</th><th style="text-align:right">Profit (SAR)</th></tr></thead>
+      <tbody>${items.length?items.map(([name,d],i)=>`<tr><td>${i+1}</td><td>${name}</td><td style="text-align:right">${fN(d.qty)}</td><td style="text-align:right">${fN(d.revenue)}</td><td style="text-align:right;color:${d.profit>=0?'var(--green)':'var(--red)'};font-weight:600">${fN(d.profit)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">No profit data. Add stock costs first.</td></tr>'}</tbody></table></div>`;
+  }
+
+  // Full Invoice List
+  if(showInvList){
+    const sorted=[...invs].sort((a,b)=>b.date.localeCompare(a.date));
+    html+=`<div class="card"><div class="card-title">🗂 Full Invoice List (${sorted.length})</div>
+      <table><thead><tr><th>Invoice #</th><th>Customer</th><th>Date</th><th>Due</th><th style="text-align:right">Total (SAR)</th><th style="text-align:right">Paid (SAR)</th><th style="text-align:right">Balance (SAR)</th><th>Status</th></tr></thead>
+      <tbody>${sorted.length?sorted.map(inv=>`<tr><td><button class="lbtn" onclick="viewInv('${inv.id}','company-statement')">${inv.number}</button></td><td>${inv.customer}</td><td>${fD(inv.date)}</td><td>${fD(inv.due)}</td><td style="text-align:right">${fN(inv.grand)}</td><td style="text-align:right;color:var(--green)">${fN(getPaid(inv))}</td><td style="text-align:right;color:var(--amber)">${fN(getBal(inv))}</td><td>${badge(getStatus(inv))}</td></tr>`).join(''):'<tr><td colspan="8" class="empty">No invoices in this period.</td></tr>'}</tbody></table></div>`;
+  }
+
+  if(!html)html='<div class="card"><div class="empty" style="padding:2rem">Select at least one section to include in the report.</div></div>';
+  document.getElementById('cs2-content').innerHTML=html;
+}
+
+function printCompanyStatement(){
+  const from=document.getElementById('cs2-from').value;
+  const to=document.getElementById('cs2-to').value;
+  let invs=[...D.invoices];
+  if(from)invs=invs.filter(i=>i.date>=from);
+  if(to)invs=invs.filter(i=>i.date<=to);
+  const s=S;
+  const total=invs.reduce((s,i)=>s+i.grand,0);
+  const paid=invs.reduce((s,i)=>s+getPaid(i),0);
+  const bal=invs.reduce((s,i)=>s+getBal(i),0);
+  let totalRevenue=total,totalCost=0,hasProfit=false;
+  invs.forEach(inv=>{[...(inv.items||[]),...(inv.items2||[])].forEach(it=>{const c=getItemAvgCostAtSave(it);if(c){totalCost+=(it.qty||0)*c;hasProfit=true;}});});
+  const grossProfit=totalRevenue-totalCost;
+  const custMap={};
+  invs.forEach(inv=>{if(!custMap[inv.customer])custMap[inv.customer]={name:inv.customer,total:0,paid:0};custMap[inv.customer].total+=inv.grand;custMap[inv.customer].paid+=getPaid(inv);});
+  const custs=Object.values(custMap).sort((a,b)=>(b.total-b.paid)-(a.total-a.paid));
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Company Statement</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:12px;color:#333;padding:24px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2px solid #185FA5;margin-bottom:18px}
+.cn{font-size:18px;font-weight:bold;color:#185FA5}.cm{font-size:11px;color:#666;line-height:1.7}
+h3{font-size:14px;font-weight:bold;color:#185FA5;margin:18px 0 8px;border-bottom:1px solid #ddd;padding-bottom:4px}
+table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px}
+th{background:#185FA5;color:#fff;padding:5px 7px;text-align:left}
+td{padding:4px 7px;border-bottom:1px solid #eee}
+.mets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.met{background:#f8f9fa;border-radius:4px;padding:9px 12px}
+.mlb{font-size:10px;color:#666;margin-bottom:3px}
+.mvl{font-size:15px;font-weight:bold;color:#185FA5}
+.logo{max-height:48px;max-width:120px;margin-bottom:6px;display:block}
+@media print{body{padding:12px}}</style></head><body>
+<div class="hdr">
+  <div>${s.logo?`<img class="logo" src="${s.logo}">`:''}
+    <div class="cn">${s.companyName||'Your Company'}</div>
+    <div class="cm">${s.address||''}${s.phone?'<br>Tel: '+s.phone:''}</div>
+  </div>
+  <div><div style="font-size:20px;font-weight:bold;color:#185FA5">COMPANY STATEMENT</div>
+    <div style="font-size:11px;color:#555;margin-top:6px">Period: ${(from||to)?(from||'Start')+' to '+(to||'Now'):'All Time'}<br>Printed: ${fD(tod())}</div>
+  </div>
+</div>
+<h3>Sales Summary</h3>
+<div class="mets">
+  <div class="met"><div class="mlb">Total Invoiced</div><div class="mvl">SAR ${fN(total)}</div></div>
+  <div class="met"><div class="mlb">Collected</div><div class="mvl" style="color:#16a34a">SAR ${fN(paid)}</div></div>
+  <div class="met"><div class="mlb">Outstanding</div><div class="mvl" style="color:#d97706">SAR ${fN(bal)}</div></div>
+  ${hasProfit?`<div class="met"><div class="mlb">Est. Gross Profit</div><div class="mvl" style="color:${grossProfit>=0?'#16a34a':'#dc2626'}">SAR ${fN(grossProfit)}</div></div>
+  <div class="met"><div class="mlb">Margin %</div><div class="mvl">${totalRevenue>0?(grossProfit/totalRevenue*100).toFixed(1)+'%':'—'}</div></div>`:''}
+</div>
+<h3>Customer Balances</h3>
+<table><thead><tr><th>Customer</th><th style="text-align:right">Total (SAR)</th><th style="text-align:right">Paid (SAR)</th><th style="text-align:right">Balance (SAR)</th></tr></thead>
+<tbody>${custs.map(c=>`<tr><td>${c.name}</td><td style="text-align:right">${fN(c.total)}</td><td style="text-align:right;color:#16a34a">${fN(c.paid)}</td><td style="text-align:right;color:#d97706;font-weight:bold">${fN(c.total-c.paid)}</td></tr>`).join('')}</tbody></table>
+</body></html>`;
+  const w=window.open('','_blank','width=900,height=1100');
+  if(!w){alert('Please allow pop-ups.');return;}
+  w.document.write(html);w.document.close();setTimeout(()=>w.print(),700);
+}
+
+// ── PASSWORD LOCK ──
+const APP_PASSWORD = "mbrillo2024"; // <-- Change this password before sharing
+
+function checkPassword(){
+  const input = document.getElementById('lock-pass');
+  const err   = document.getElementById('lock-err');
+  if(!input) return;
+  if(input.value === APP_PASSWORD){
+    const lock = document.getElementById('lock-screen');
+    lock.style.transition = 'opacity 0.4s';
+    lock.style.opacity = '0';
+    setTimeout(()=>{ lock.style.display='none'; }, 400);
+    // Store unlocked state for this session
+    sessionStorage.setItem('unlocked','1');
+  } else {
+    err.style.display = 'block';
+    input.value = '';
+    input.focus();
+    input.style.borderColor = 'rgba(220,38,38,0.6)';
+    setTimeout(()=>{ input.style.borderColor='rgba(255,255,255,0.18)'; }, 1500);
+  }
+}
+
+// Auto-unlock if already unlocked this session (page refresh)
+(function(){
+  if(sessionStorage.getItem('unlocked')==='1'){
+    const lock=document.getElementById('lock-screen');
+    if(lock) lock.style.display='none';
+  }
+})();
+
+// Ensure DOM is fully loaded before initialising (required for GitHub Pages)
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', loadAll);
+} else {
+  loadAll();
+}
+</script>
+</body>
+</html>
